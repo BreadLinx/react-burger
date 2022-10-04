@@ -2,15 +2,15 @@ import { Logo } from '@ya.praktikum/react-developer-burger-ui-components';
 import { BurgerIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { ListIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import AppHeaderStyles from './app-header.module.css';
+import appHeaderStyles from './app-header.module.css';
  
 export function AppHeader() {
     return (
-        <header className={AppHeaderStyles.header}>
-            <button type='button' className={`p-5 ${AppHeaderStyles.button}`}><BurgerIcon type="primary" /><p className='text text_type_main-default'>Конструктор</p></button>
-            <button type='button' className={`p-5 ${AppHeaderStyles.button}`}><ListIcon type="primary" /><p className='text text_type_main-default'>Лента заказов</p></button>
+        <header className={appHeaderStyles.header}>
+            <a href='#' className={`p-5 ${appHeaderStyles.button} ${appHeaderStyles.button_active}`}><BurgerIcon type="primary" /><p className='text text_type_main-default'>Конструктор</p></a>
+            <a href='#' className={`p-5 ${appHeaderStyles.button}`}><ListIcon type="secondary" /><p className='text text_type_main-default'>Лента заказов</p></a>
             <Logo />
-            <button type='button' className={`p-5 ${AppHeaderStyles.button}`}><ProfileIcon type="primary" /><p className='text text_type_main-default'>Личный кабинет</p></button>
+            <a href='#' className={`p-5 ${appHeaderStyles.button}`}><ProfileIcon type="secondary" /><p className='text text_type_main-default'>Личный кабинет</p></a>
         </header>
     );
 }

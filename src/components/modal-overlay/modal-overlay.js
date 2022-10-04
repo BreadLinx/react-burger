@@ -1,22 +1,20 @@
-import ModalOverlayStyles from './modal-overlay.module.css';
+import modalOverlayStyles from './modal-overlay.module.css';
 import PropTypes from 'prop-types';
 
-export function ModalOverlay({children, setModalOpened}) {
+export function ModalOverlay({closePopup}) {
     return ( 
             <section onClick={
               (evt) => {
-                if(evt.target.className === ModalOverlayStyles.modalOverlay) {
-                  setModalOpened(false);
+                if(evt.target.className === modalOverlayStyles.modalOverlay) {
+                  closePopup();
                 }
               }
             } 
-            className={ModalOverlayStyles.modalOverlay}>
-              {children}
+            className={modalOverlayStyles.modalOverlay}>
             </section>
         );
 }
 
 ModalOverlay.propTypes= {
-  children: PropTypes.any.isRequired,
-  setModalOpened: PropTypes.func.isRequired
+  closePopup: PropTypes.func.isRequired
 };

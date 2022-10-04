@@ -1,28 +1,28 @@
-import IngredientDetailsStyles from './ingredient-details.module.css';
+import ingredientDetailsStyles from './ingredient-details.module.css';
 import PropTypes from 'prop-types';
 
-export function IngredientDetails({image, name, calories, proteins, fats, carbohydrates}) {
+export function IngredientDetails({ingredientDetails}) {
     return (
         <>
-            <h2 className={`text text_type_main-large ${IngredientDetailsStyles.title}`}>Детали ингредиента</h2>
-            <img src={image} alt={name} className={IngredientDetailsStyles.image} />
-            <p className={`text text_type_main-medium mt-4 mb-8 ${IngredientDetailsStyles.name}`}>{name}</p>
-            <ul className={IngredientDetailsStyles.compound}>
-                <li className={IngredientDetailsStyles.component}>
+            <h2 className={`text text_type_main-large ${ingredientDetailsStyles.title}`}>Детали ингредиента</h2>
+            <img src={ingredientDetails.image} alt={ingredientDetails.name} className={ingredientDetailsStyles.image} />
+            <p className={`text text_type_main-medium mt-4 mb-8 ${ingredientDetailsStyles.name}`}>{ingredientDetails.name}</p>
+            <ul className={ingredientDetailsStyles.compound}>
+                <li className={ingredientDetailsStyles.component}>
                     <p className='text text_type_main-default text_color_inactive'>Калории,ккал</p>
-                    <p className={`text text_type_digits-medium text_color_inactive ${IngredientDetailsStyles.digits}`}>{calories}</p>
+                    <p className={`text text_type_digits-medium text_color_inactive ${ingredientDetailsStyles.digits}`}>{ingredientDetails.calories}</p>
                 </li>
-                <li className={IngredientDetailsStyles.component}>
+                <li className={ingredientDetailsStyles.component}>
                     <p className='text text_type_main-default text_color_inactive'>Белки, г</p>
-                    <p className={`text text_type_digits-medium text_color_inactive ${IngredientDetailsStyles.digits}`}>{proteins}</p>
+                    <p className={`text text_type_digits-medium text_color_inactive ${ingredientDetailsStyles.digits}`}>{ingredientDetails.proteins}</p>
                 </li>
-                <li className={IngredientDetailsStyles.component}>
+                <li className={ingredientDetailsStyles.component}>
                     <p className='text text_type_main-default text_color_inactive'>Жиры, г</p>
-                    <p className={`text text_type_digits-medium text_color_inactive ${IngredientDetailsStyles.digits}`}>{fats}</p>
+                    <p className={`text text_type_digits-medium text_color_inactive ${ingredientDetailsStyles.digits}`}>{ingredientDetails.fats}</p>
                 </li>
-                <li className={IngredientDetailsStyles.component}>
+                <li className={ingredientDetailsStyles.component}>
                     <p className='text text_type_main-default text_color_inactive'>Углеводы, г</p>
-                    <p className={`text text_type_digits-medium text_color_inactive ${IngredientDetailsStyles.digits}`}>{carbohydrates}</p>
+                    <p className={`text text_type_digits-medium text_color_inactive ${ingredientDetailsStyles.digits}`}>{ingredientDetails.carbohydrates}</p>
                 </li>
             </ul>
         </>
@@ -30,10 +30,12 @@ export function IngredientDetails({image, name, calories, proteins, fats, carboh
 }
 
 IngredientDetails.propTypes = {
-    image: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    calories: PropTypes.number.isRequired,
-    proteins: PropTypes.number.isRequired,
-    fats: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired
+    ingredientDetails: PropTypes.shape({
+        image: PropTypes.string,
+        name: PropTypes.string,
+        calories: PropTypes.number,
+        proteins: PropTypes.number,
+        fats: PropTypes.number,
+        carbohydrates: PropTypes.number
+    }).isRequired
 };

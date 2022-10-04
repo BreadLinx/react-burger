@@ -44,16 +44,6 @@
     align-items: center;
 }
 
-.fillingBoxDrugButton {
-    border: 0;
-    padding: 0;
-    display: block;
-    width: 24px;
-    height: 24px;
-    background-color: initial;
-    cursor: pointer;
-}
-
 .total {
     width: 100%;
     display: flex;
