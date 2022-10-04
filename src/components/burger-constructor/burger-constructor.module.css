@@ -1,0 +1,76 @@
+.section {
+    width: 600px;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 40px;
+    align-items: center;
+}
+
+.constructorBox {
+    box-sizing: border-box;
+    width: 600px;
+    height: calc(100vh - 300px);
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+    gap: 16px;
+}
+
+.constructorBox div {
+    margin-right: 16px;
+}
+
+.fillingBox {
+    height: calc(100vh - 460px);
+    width: 100%;
+    overflow-y: overlay;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+    gap: 16px;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.fillingBox div {
+    margin-right: 16px;
+}
+
+.fillingBoxItem {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.fillingBoxDrugButton {
+    border: 0;
+    padding: 0;
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-color: initial;
+    cursor: pointer;
+}
+
+.total {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 40px;
+}
+
+.total svg {
+    width: 32px;
+    height: 32px;
+}
+
+.totalCounter {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 9.5px;
+}

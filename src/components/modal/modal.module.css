@@ -1,0 +1,36 @@
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 1;
+    width: 720px;
+    /* height: 71.8%; */
+    background-color: #1c1c21;
+    border-radius: 40px;
+    box-shadow: 0px 24px 32px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 0px 1px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(76, 76, 255, 0.2);
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    padding: 0 100px 0 100px;
+    box-sizing: border-box;
+}
+
+.closeButton {
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    top: 60px;
+    right: 40px;
+    background-color: initial;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+}
+
+.closeButton svg {
+    width: 18px;
+    height: 18px;
+}

@@ -1,0 +1,21 @@
+.card {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    width: 272px;
+    height: 208px;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+}
+
+.costWrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.card__description {
+    text-align: center;
+}

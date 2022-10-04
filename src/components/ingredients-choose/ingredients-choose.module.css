@@ -1,0 +1,8 @@
+.cardsWrapper {
+    display: flex;
+    flex-flow: row wrap;
+    padding-left: 16px;
+    padding-right: 8px;
+    list-style: none;
+    gap: 32px 24px;
+}

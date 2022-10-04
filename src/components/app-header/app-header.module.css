@@ -1,0 +1,33 @@
+.header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    padding-left: calc(50% - 640px);
+    padding-right: calc(50% - 640px);
+    background-color: #1C1C21;
+    height: 88px;
+}
+
+.button {
+    border: 0;
+    border-radius: 40px;
+    background-color: initial;
+    color: #fff;
+    line-height: 24px;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 8px;
+}
+
+.button:nth-of-type(1) {
+    margin-right: 8px;
+}
+
+.button:nth-of-type(2) {
+    margin-right: 112px;
+}
+
+.button:nth-of-type(3) {
+    margin-left: 288.85px;
+}
