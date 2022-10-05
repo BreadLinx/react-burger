@@ -1,5 +1,5 @@
 import ingredientDetailsStyles from './ingredient-details.module.css';
-import PropTypes from 'prop-types';
+import {ingridientPropTypes} from '../../utils/prop-types.js';
 
 export function IngredientDetails({ingredientDetails}) {
     return (
@@ -18,7 +18,7 @@ export function IngredientDetails({ingredientDetails}) {
                 </li>
                 <li className={ingredientDetailsStyles.component}>
                     <p className='text text_type_main-default text_color_inactive'>Жиры, г</p>
-                    <p className={`text text_type_digits-medium text_color_inactive ${ingredientDetailsStyles.digits}`}>{ingredientDetails.fats}</p>
+                    <p className={`text text_type_digits-medium text_color_inactive ${ingredientDetailsStyles.digits}`}>{ingredientDetails.fat}</p>
                 </li>
                 <li className={ingredientDetailsStyles.component}>
                     <p className='text text_type_main-default text_color_inactive'>Углеводы, г</p>
@@ -30,12 +30,5 @@ export function IngredientDetails({ingredientDetails}) {
 }
 
 IngredientDetails.propTypes = {
-    ingredientDetails: PropTypes.shape({
-        image: PropTypes.string,
-        name: PropTypes.string,
-        calories: PropTypes.number,
-        proteins: PropTypes.number,
-        fats: PropTypes.number,
-        carbohydrates: PropTypes.number
-    }).isRequired
+    ingredientDetails: ingridientPropTypes
 };

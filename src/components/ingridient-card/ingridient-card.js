@@ -7,12 +7,7 @@ export function IngridientCard({cardData, children, popupEditFunctions}) {
     function handleClick() {
         popupEditFunctions.setIsIngredientModalOpened(true);
         popupEditFunctions.setIngredientDetailsData({
-          image: cardData.image_large,
-          name: cardData.name,
-          calories: cardData.calories,
-          proteins: cardData.proteins,
-          fats: cardData.fat,
-          carbohydrates: cardData.carbohydrates
+          ...cardData
         });
     }
 
@@ -33,7 +28,6 @@ IngridientCard.propTypes = {
   children: PropTypes.node.isRequired,
   popupEditFunctions: PropTypes.shape({
     setIsIngredientModalOpened: PropTypes.func,
-    closePopup: PropTypes.func,
-    setIngredientDetailsData: PropTypes.func,
+    setIngredientDetailsData: PropTypes.func
   }).isRequired
 };

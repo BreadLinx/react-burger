@@ -24,7 +24,6 @@ IngredientsChoose.propTypes = {
   data: PropTypes.arrayOf(ingridientPropTypes).isRequired,
   popupEditFunctions: PropTypes.shape({
     setIsIngredientModalOpened: PropTypes.func,
-    closePopup: PropTypes.func,
     setIngredientDetailsData: PropTypes.func,
   }).isRequired
 };
