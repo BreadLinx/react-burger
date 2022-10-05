@@ -6,9 +6,7 @@ import {ingridientPropTypes} from '../../utils/prop-types.js';
 export function IngridientCard({cardData, children, popupEditFunctions}) {
     function handleClick() {
         popupEditFunctions.setIsIngredientModalOpened(true);
-        popupEditFunctions.setIngredientDetailsData({
-          ...cardData
-        });
+        popupEditFunctions.setIngredientDetailsData(cardData);
     }
 
     return (
