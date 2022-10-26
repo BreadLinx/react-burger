@@ -1,0 +1,6 @@
+.totalCounter {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 9.5px;
+}
