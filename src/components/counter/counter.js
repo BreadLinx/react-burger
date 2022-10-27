@@ -40,6 +40,6 @@ export function Counter({burgerStructure}) {
 Counter.propTypes = {
     burgerStructure: PropTypes.shape({
         bun: ingridientPropTypes,
-        ingridients: PropTypes.arrayOf(ingridientPropTypes)
+        ingridients: PropTypes.arrayOf(ingridientPropTypes).isRequired
     }).isRequired
 };

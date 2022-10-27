@@ -13,7 +13,7 @@ export function OrderDetails({isLoading, orderData}) {
               <>
                 <h2 className={`text text_type_digits-large ${orderDetailsStyle.title}`}>{orderData.orderNumber}</h2>
                 <p className={`text text_type_main-medium ${orderDetailsStyle.orderId}`}>идентификатор заказа</p>
-                <img src={orderCheckedImage} className={orderDetailsStyle.orderChecked} />
+                <img src={orderCheckedImage} alt='Галочка выполнения заказа' className={orderDetailsStyle.orderChecked} />
                 <p className={`text text_type_main-default`}>Ваш заказ начали готовить</p>
                 <p className={`text text_type_main-default text_color_inactive ${orderDetailsStyle.waitText}`}>Дождитесь готовности на орбитальной станции</p>
               </>
@@ -26,7 +26,7 @@ export function OrderDetails({isLoading, orderData}) {
 OrderDetails.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   orderData: PropTypes.shape({
-    name: PropTypes.string,
-    orderNumber: PropTypes.number
-  }).isRequired
+    name: PropTypes.string.isRequired,
+    orderNumber: PropTypes.number.isRequired
+  })
 };

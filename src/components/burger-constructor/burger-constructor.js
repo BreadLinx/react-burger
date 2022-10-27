@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import { Button, DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components'
 import image from '../../images/bun-01.svg';
@@ -11,17 +11,18 @@ import {sendOrderRequest} from '../../utils/burger-api.js';
 
 export function BurgerConstructor() {
     const [isOrderModalOpened, setIsOrderModalOpened] = useState(false);
-    const [data, setData] = useContext(DataContext);
+    const [data] = useContext(DataContext);
 
     const bun = data.filter(item => item.type === 'bun')[0];
-    const sauces = data.filter(item => item.type === 'sauce' || item.type === 'main'); // тестовые массив, как будто уже что-то собрали
+    const sauces = data.filter(item => item.type !== 'bun');
 
     const [burgerStructure, setBurgerStructure] = useState({
-      bun: '',
+      bun: {},
       ingridients: []
     });
     const [isLoading, setIsLoading] = useState(false);
-    const [orderData, setOrderData] = useState({});
+    const [orderData, setOrderData] = useState(null);
+    const [burgerStructureInId, setBurgerStructureInId] = useState([]);
 
     React.useEffect(() => {
       setBurgerStructure({
@@ -30,6 +31,12 @@ export function BurgerConstructor() {
         ingridients: sauces
       });
     }, [bun]);
+
+    React.useEffect(() => {
+      if(burgerStructure.bun) {
+        setBurgerStructureInId([burgerStructure.bun._id, ...burgerStructure.ingridients.map(item => item._id), burgerStructure.bun._id]);
+      }
+    }, [burgerStructure]);
 
     function closePopup() {
       setIsOrderModalOpened(false);
@@ -64,9 +71,9 @@ export function BurgerConstructor() {
                 <ConstructorElement type="top" isLocked={true} text={`${burgerStructure.bun.name} (верх)`} price={burgerStructure.bun.price} thumbnail={burgerStructure.bun.image}/>
                   <ul className={`${burgerConstructorStyles.fillingBox}`}>
                     {
-                      burgerStructure.ingridients.map((item) => {
+                      burgerStructure.ingridients.map((item, index) => {
                         return (
-                          <li key={item._id} className={`${burgerConstructorStyles.fillingBoxItem}`}><DragIcon type="primary" /><ConstructorElement text={item.name} price={item.price} thumbnail={item.image}/></li>
+                          <li key={index} className={`${burgerConstructorStyles.fillingBoxItem}`}><DragIcon type="primary" /><ConstructorElement text={item.name} price={item.price} thumbnail={item.image}/></li>
                         )
                       })
                     }  
@@ -78,7 +85,7 @@ export function BurgerConstructor() {
         </div>
         <div className={`${burgerConstructorStyles.total}`}>
           <Counter burgerStructure={burgerStructure} />
-          <Button onClick={() => {handleOrder([burgerStructure.bun._id, ...burgerStructure.ingridients.map(item => item._id)])}} type="primary" size="large" htmlType='button'>Нажми на меня</Button>
+          <Button onClick={() => {handleOrder(burgerStructureInId)}} type="primary" size="large" htmlType='button'>Нажми на меня</Button>
         </div>
         {
           isOrderModalOpened &&

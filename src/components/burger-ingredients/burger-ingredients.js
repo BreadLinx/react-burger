@@ -8,7 +8,7 @@ import {IngredientDetails} from '../ingredient-details/ingredient-details.js';
 
 export function BurgerIngredients({data}) {
     const [isIngredientModalOpened, setIsIngredientModalOpened] = React.useState(false);
-    const [ingredientDetailsData, setIngredientDetailsData] = React.useState({});
+    const [ingredientDetailsData, setIngredientDetailsData] = React.useState(null);
     const buns = data.filter(item => item.type === 'bun');
     const sauces = data.filter(item => item.type === 'sauce');
     const mains = data.filter(item => item.type === 'main');
