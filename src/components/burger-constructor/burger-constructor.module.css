@@ -42,6 +42,7 @@
     flex-flow: row nowrap;
     gap: 8px;
     align-items: center;
+    width: 100%;
 }
 
 .total {
@@ -56,11 +57,4 @@
 .total svg {
     width: 32px;
     height: 32px;
-}
-
-.totalCounter {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    gap: 9.5px;
 }

@@ -4,14 +4,16 @@ import {AppHeader} from '../app-header/app-header.js';
 import {BurgerIngredients} from '../burger-ingredients/burger-ingredients.js';
 import {BurgerConstructor} from '../burger-constructor/burger-constructor.js';
 import {getIngredients} from '../../utils/burger-api.js';
+import {DataContext} from '../../services/dataContex.js';
 
 export function App() {
-    const [data, setData] = React.useState([]);
+    const dataSet = React.useState([]);
+    const [data, setData] = dataSet;
 
     React.useEffect(() => {
         getIngredients()
         .then((res) => {
-            setData(res.data);
+          setData(res.data);
         })
         .catch((err) => {
             alert(`Произошла ошибка при выполнении запроса. ${err}`);
@@ -23,7 +25,9 @@ export function App() {
         <AppHeader/>
         <main className='main'>
           <BurgerIngredients data={data} />
-          <BurgerConstructor data={data} />
+          <DataContext.Provider value={dataSet}>
+            <BurgerConstructor />
+          </DataContext.Provider>
         </main>
       </>
     );
