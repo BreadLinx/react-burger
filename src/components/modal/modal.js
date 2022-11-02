@@ -1,21 +1,34 @@
-import React from 'react';
+import {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import modalStyles from './modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import {OrderDetails} from '../order-details/order-details.js';
-import {IngredientDetails} from '../ingredient-details/ingredient-details.js';
 import {ModalOverlay} from '../modal-overlay/modal-overlay.js';
 import {modalRoot} from '../../index.js';
 import PropTypes from 'prop-types';
+import {useDispatch} from 'react-redux';
+import {ingredientDetailsSlice} from '../../services/reducers/IngredientDetailsSlice.js';
+import {orderDetailsSlice} from '../../services/reducers/order-details-slice.js';
+export function Modal({children, type}) {
+    const dispatch = useDispatch();
+    const {setIsPopupOpenedOnFalse, clearRelevantIngredient} = ingredientDetailsSlice.actions;
+    const {setIsOrderPopupOpenedOnFalse} = orderDetailsSlice.actions;
 
-export function Modal({closePopup, children}) {
+    const closePopup = type === 'ingredients' 
+    ? () => {
+        dispatch(setIsPopupOpenedOnFalse());
+        dispatch(clearRelevantIngredient());
+    }
+    : () => {
+        dispatch(setIsOrderPopupOpenedOnFalse());
+    };
+
     function closePopupByEsc(evt) {
         if(evt.key === "Escape") {
             closePopup();
         }
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         document.addEventListener('keydown', closePopupByEsc);
 
         return () => {
@@ -38,6 +51,5 @@ export function Modal({closePopup, children}) {
 }
 
 Modal.propTypes = {
-    closePopup: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired
 };

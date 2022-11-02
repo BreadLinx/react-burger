@@ -1,17 +1,19 @@
 import orderDetailsStyle from './order-details.module.css';
 import orderCheckedImage from '../../images/orderCheched.svg';
 import {Loader} from '../loader/loader.js';
-import PropTypes from 'prop-types';
+import {useSelector} from 'react-redux';
 
-export function OrderDetails({isLoading, orderData}) {
+export function OrderDetails() {
+    const {orderData, orderRequest} = useSelector(state => state.orderDetailsReducer);
+
     return (
         <>
           {
-            isLoading ?
+            orderRequest ?
             <Loader/> :
             (
               <>
-                <h2 className={`text text_type_digits-large ${orderDetailsStyle.title}`}>{orderData.orderNumber}</h2>
+                <h2 className={`text text_type_digits-large ${orderDetailsStyle.title}`}>{orderData.order.number}</h2>
                 <p className={`text text_type_main-medium ${orderDetailsStyle.orderId}`}>идентификатор заказа</p>
                 <img src={orderCheckedImage} alt='Галочка выполнения заказа' className={orderDetailsStyle.orderChecked} />
                 <p className={`text text_type_main-default`}>Ваш заказ начали готовить</p>
@@ -22,11 +24,3 @@ export function OrderDetails({isLoading, orderData}) {
         </>
     );
 }
-
-OrderDetails.propTypes = {
-  isLoading: PropTypes.bool.isRequired,
-  orderData: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    orderNumber: PropTypes.number.isRequired
-  })
-};

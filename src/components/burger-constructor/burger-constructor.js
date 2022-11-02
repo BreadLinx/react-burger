@@ -1,69 +1,56 @@
-import React, { useContext, useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import { Button, DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components'
-import image from '../../images/bun-01.svg';
-import {ingridientPropTypes} from '../../utils/prop-types.js';
 import {Modal} from '../modal/modal.js';
 import {Counter} from '../counter/counter.js';
 import {OrderDetails} from '../order-details/order-details.js';
-import {DataContext} from '../../services/dataContex.js';
-import {sendOrderRequest} from '../../utils/burger-api.js';
+import {orderDetailsSlice} from '../../services/reducers/order-details-slice.js';
+import {sendOrder} from '../../services/actions/async-actions.js';
+import {useDrop} from 'react-dnd';
+import {burgerConstructorSlice} from '../../services/reducers/burger-constructor-slice.js';
+import {burgerIngredientsSlice} from '../../services/reducers/burgerIngredientsSlice.js';
 
 export function BurgerConstructor() {
-    const [isOrderModalOpened, setIsOrderModalOpened] = useState(false);
-    const [data] = useContext(DataContext);
+    const dispatch = useDispatch();
+    const {isOrderPopupOpened} = useSelector(state => state.orderDetailsReducer);
+    const {burgerStructure, burgerStructureInId} = useSelector(state => state.burgerConstructorReducer);
 
-    const bun = data.filter(item => item.type === 'bun')[0];
-    const sauces = data.filter(item => item.type !== 'bun');
+    const {addIngredient, setBurgerStructureInId, deleteIngredient} = burgerConstructorSlice.actions;
+    const {setIsOrderPopupOpenedOnTrue} = orderDetailsSlice.actions;
 
-    const [burgerStructure, setBurgerStructure] = useState({
-      bun: {},
-      ingridients: []
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [orderData, setOrderData] = useState(null);
-    const [burgerStructureInId, setBurgerStructureInId] = useState([]);
-
-    React.useEffect(() => {
-      setBurgerStructure({
-        ...burgerStructure,
-        bun,
-        ingridients: sauces
-      });
-    }, [bun]);
-
-    React.useEffect(() => {
+    useEffect(() => {
       if(burgerStructure.bun) {
-        setBurgerStructureInId([burgerStructure.bun._id, ...burgerStructure.ingridients.map(item => item._id), burgerStructure.bun._id]);
+        dispatch(setBurgerStructureInId([burgerStructure.bun._id, ...burgerStructure.ingredients.map(item => item._id), burgerStructure.bun._id]));
       }
     }, [burgerStructure]);
 
-    function closePopup() {
-      setIsOrderModalOpened(false);
+    const [{hover}, dropTarget] = useDrop({
+      accept: 'ingredient',
+      drop(item) {
+        handleDrop(item);
+      },
+      collect: monitor => ({
+        hover: monitor.isOver()
+      })
+    });
+
+    function handleDrop(item) {
+      dispatch(addIngredient(item));
     }
 
     function handleOrder(idArray) {
-      setIsLoading(true);
-      setIsOrderModalOpened(true);
-      sendOrderRequest(idArray)
-      .then((res) => {
-        setOrderData({
-          ...orderData,
-          name: res.name,
-          orderNumber: res.order.number
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      dispatch(setIsOrderPopupOpenedOnTrue());
+      dispatch(sendOrder(idArray));
+    }
+
+    function handleIngredientDelete(index) {
+      dispatch(deleteIngredient(index));
     }
 
     return (
       <section className={`${burgerConstructorStyles.section}`}>
-        <div className={`mt-25 pl-4 ${burgerConstructorStyles.constructorBox}`}>
+        <div ref={dropTarget} className={`mt-25 pl-4 ${burgerConstructorStyles.constructorBox} ${hover ? burgerConstructorStyles.constructorBoxOnHover : ''}`}>
           {
             burgerStructure.bun &&
             ( 
@@ -71,9 +58,9 @@ export function BurgerConstructor() {
                 <ConstructorElement type="top" isLocked={true} text={`${burgerStructure.bun.name} (верх)`} price={burgerStructure.bun.price} thumbnail={burgerStructure.bun.image}/>
                   <ul className={`${burgerConstructorStyles.fillingBox}`}>
                     {
-                      burgerStructure.ingridients.map((item, index) => {
+                      burgerStructure.ingredients.map((item, index) => {
                         return (
-                          <li key={index} className={`${burgerConstructorStyles.fillingBoxItem}`}><DragIcon type="primary" /><ConstructorElement text={item.name} price={item.price} thumbnail={item.image}/></li>
+                          <li key={index} className={`${burgerConstructorStyles.fillingBoxItem}`}><DragIcon type="primary" /><ConstructorElement handleClose={() => {handleIngredientDelete(index)}} text={item.name} price={item.price} thumbnail={item.image}/></li>
                         )
                       })
                     }  
@@ -84,13 +71,13 @@ export function BurgerConstructor() {
           }
         </div>
         <div className={`${burgerConstructorStyles.total}`}>
-          <Counter burgerStructure={burgerStructure} />
+          <Counter />
           <Button onClick={() => {handleOrder(burgerStructureInId)}} type="primary" size="large" htmlType='button'>Нажми на меня</Button>
         </div>
         {
-          isOrderModalOpened &&
-          <Modal closePopup={closePopup}>
-            <OrderDetails isLoading={isLoading} orderData={orderData} />
+          isOrderPopupOpened &&
+          <Modal type='order'>
+            <OrderDetails />
           </Modal>
         }
       </section>
