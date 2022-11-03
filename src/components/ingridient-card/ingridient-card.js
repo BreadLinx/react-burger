@@ -4,7 +4,7 @@ import ingridientCardStyles from './ingridient-card.module.css';
 import PropTypes from 'prop-types';
 import {ingridientPropTypes} from '../../utils/prop-types.js';
 import {useDispatch, useSelector} from 'react-redux';
-import {ingredientDetailsSlice} from '../../services/reducers/IngredientDetailsSlice.js';
+import {ingredientDetailsSlice} from '../../services/reducers/ingredient-details-slice.js';
 import { useDrag } from 'react-dnd';
 export function IngridientCard({cardData}) {
     const {setIsPopupOpenedOnTrue, setRelevantIngredient} = ingredientDetailsSlice.actions;

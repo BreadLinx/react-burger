@@ -19,7 +19,7 @@ export function BurgerIngredients() {
     const buns = ingredients.filter(item => item.type === 'bun');
     const sauces = ingredients.filter(item => item.type === 'sauce');
     const mains = ingredients.filter(item => item.type === 'main');
-    
+
     return (
         <section className={`${burgerIngredientsStyles.section}`}>
           <h1 className={`text text_type_main-large mt-10`}>Соберите бургер</h1>

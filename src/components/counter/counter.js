@@ -2,8 +2,6 @@ import {useEffect, useReducer} from 'react';
 import {useSelector} from 'react-redux';
 import counterStyles from './counter.module.css';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import PropTypes from 'prop-types';
-import {ingridientPropTypes} from '../../utils/prop-types.js';
 
 const initialState = { count: 0 };
 

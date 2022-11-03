@@ -5,7 +5,10 @@ const initialState = {
         bun: null,
         ingredients: []
     },
-    burgerStructureInId: []
+    burgerStructureInId: [],
+    dragData: {
+        dragStatus: false,
+    },
 };
 
 export const burgerConstructorSlice = createSlice({
@@ -26,6 +29,25 @@ export const burgerConstructorSlice = createSlice({
         },
         deleteIngredient: (state, action) => {
             state.burgerStructure.ingredients.splice(action.payload, 1);
+        },
+        changeIngredientsPlaces: (state, action) => {
+            state.burgerStructure.ingredients.splice(action.payload.hoverIndex, 1);
+            state.burgerStructure.ingredients.splice(action.payload.dragIndex, 0, action.payload.item);
+        },
+        applyDraggingStyles: (state, action) => {
+            state.burgerStructure.ingredients.forEach(item => {
+                item.isDragging = false;
+            });
+            state.burgerStructure.ingredients.find(item => item.dragId === action.payload).isDragging = true;
+        },
+        startDragging: (state) => {
+            state.dragData.dragStatus = true;
+        },
+        endDragging: (state) => {
+            state.dragData.dragStatus = false;
+            state.burgerStructure.ingredients.forEach(item => {
+                item.isDragging = false;
+            });
         },
     }
 });

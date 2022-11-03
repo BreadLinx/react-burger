@@ -1,0 +1,26 @@
+.fillingBoxItem {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.itemWrapper {
+    width: 100%;
+    border-radius: 40px;
+}
+
+.itemWrapperOnDragging {
+    opacity: .5;
+}
+
+.itemWrapperOnCanDrop {
+    box-shadow: rgb(116, 116, 255) 0px 0px 7px 2px;
+    opacity: 1;
+}
+
+.dragIconWrapper {
+    cursor: grab;
+    margin-right: 0 !important;
+}

@@ -6,7 +6,7 @@ import {ModalOverlay} from '../modal-overlay/modal-overlay.js';
 import {modalRoot} from '../../index.js';
 import PropTypes from 'prop-types';
 import {useDispatch} from 'react-redux';
-import {ingredientDetailsSlice} from '../../services/reducers/IngredientDetailsSlice.js';
+import {ingredientDetailsSlice} from '../../services/reducers/ingredient-details-slice.js';
 import {orderDetailsSlice} from '../../services/reducers/order-details-slice.js';
 export function Modal({children, type}) {
     const dispatch = useDispatch();
@@ -51,5 +51,6 @@ export function Modal({children, type}) {
 }
 
 Modal.propTypes = {
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
+    type: PropTypes.string.isRequired,
 };

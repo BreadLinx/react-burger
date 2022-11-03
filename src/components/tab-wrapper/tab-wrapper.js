@@ -1,9 +1,9 @@
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-
+import PropTypes from 'prop-types';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import tabWrapperStyles from './tab-wrapper.module.css';
-import {burgerIngredientsSlice} from '../../services/reducers/burgerIngredientsSlice.js';
+import {burgerIngredientsSlice} from '../../services/reducers/burger-ingredients-slice.js';
 
 export function TabWrapper({inViewBuns, inViewSauces, inViewMains}) {
     const dispatch = useDispatch();
@@ -41,3 +41,9 @@ export function TabWrapper({inViewBuns, inViewSauces, inViewMains}) {
         </div>
     );
 }
+
+TabWrapper.propTypes = {
+  inViewBuns: PropTypes.bool.isRequired,
+  inViewSauces: PropTypes.bool.isRequired,
+  inViewMains: PropTypes.bool.isRequired,
+};
