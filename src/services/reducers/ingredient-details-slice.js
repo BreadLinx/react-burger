@@ -2,7 +2,6 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
     relevantIngredient: null,
-    isPopupOpened: false
 };
 
 export const ingredientDetailsSlice = createSlice({
@@ -14,12 +13,6 @@ export const ingredientDetailsSlice = createSlice({
         },
         clearRelevantIngredient: (state) => {
             state.relevantIngredient = null
-        },
-        setIsPopupOpenedOnFalse: (state) => {
-            state.isPopupOpened = false;
-        },
-        setIsPopupOpenedOnTrue: (state) => {
-            state.isPopupOpened = true;
         },
     }
 });

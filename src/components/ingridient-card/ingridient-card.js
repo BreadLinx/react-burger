@@ -1,18 +1,17 @@
 import {useEffect, useState} from 'react';
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import ingridientCardStyles from './ingridient-card.module.css';
-import PropTypes from 'prop-types';
 import {ingridientPropTypes} from '../../utils/prop-types.js';
 import {useDispatch, useSelector} from 'react-redux';
 import {ingredientDetailsSlice} from '../../services/reducers/ingredient-details-slice.js';
 import { useDrag } from 'react-dnd';
 export function IngridientCard({cardData}) {
-    const {setIsPopupOpenedOnTrue, setRelevantIngredient} = ingredientDetailsSlice.actions;
+    const {setRelevantIngredient} = ingredientDetailsSlice.actions;
     const dispatch = useDispatch();
 
     const [counter, setCounter] = useState(0);
 
-    const {burgerStructureInId} = useSelector(state => state.burgerConstructorReducer);
+    const {burgerStructure} = useSelector(state => state.burgerConstructorReducer);
 
     const [{isDrag}, dragRef] = useDrag({
       type: 'ingredient',
@@ -23,11 +22,14 @@ export function IngridientCard({cardData}) {
     });
 
     useEffect(() => {
-      setCounter(burgerStructureInId.filter(item => item === cardData._id).length);
-    }, [burgerStructureInId]);
+      if(cardData.type === 'bun' && burgerStructure.bun && burgerStructure.bun._id === cardData._id) {
+        setCounter(2);
+      } else {
+        setCounter(burgerStructure.ingredients.filter(item => item._id === cardData._id).length);
+      }
+    }, [burgerStructure]);
 
     function handleClick() {
-        dispatch(setIsPopupOpenedOnTrue());
         dispatch(setRelevantIngredient(cardData));
     }
 

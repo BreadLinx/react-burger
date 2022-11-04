@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import {AppHeader} from '../app-header/app-header.js';
 import {BurgerIngredients} from '../burger-ingredients/burger-ingredients.js';
 import {BurgerConstructor} from '../burger-constructor/burger-constructor.js';
-import {getIngridients} from '../../services/actions/async-actions.js';
+import {getIngridients} from '../../services/actions/getIngridients-action.js';
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 

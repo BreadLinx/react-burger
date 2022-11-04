@@ -1,14 +1,11 @@
-import {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useEffect, useState} from "react";
 import PropTypes from 'prop-types';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import tabWrapperStyles from './tab-wrapper.module.css';
-import {burgerIngredientsSlice} from '../../services/reducers/burger-ingredients-slice.js';
 
 export function TabWrapper({inViewBuns, inViewSauces, inViewMains}) {
-    const dispatch = useDispatch();
-    const {setCurrentTab} = burgerIngredientsSlice.actions;
-    const {currentTab} = useSelector(state => state.burgerIngredientsReducer.tabsData);
+
+    const [currentTab, setCurrentTab] = useState('buns');
 
     function setCurrentTabOnClick(value) {
       const element = document.getElementById(value);
@@ -19,11 +16,11 @@ export function TabWrapper({inViewBuns, inViewSauces, inViewMains}) {
 
     useEffect(() => {
       if(inViewBuns) {
-        dispatch(setCurrentTab('buns'));
+        setCurrentTab('buns');
       } else if(inViewSauces) {
-        dispatch(setCurrentTab('sauces'));
+        setCurrentTab('sauces');
       } else if(inViewMains) {
-        dispatch(setCurrentTab('mains'));
+        setCurrentTab('mains');
       }
     }, [inViewBuns, inViewSauces, inViewMains]);
 

@@ -5,22 +5,8 @@ import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import {ModalOverlay} from '../modal-overlay/modal-overlay.js';
 import {modalRoot} from '../../index.js';
 import PropTypes from 'prop-types';
-import {useDispatch} from 'react-redux';
-import {ingredientDetailsSlice} from '../../services/reducers/ingredient-details-slice.js';
-import {orderDetailsSlice} from '../../services/reducers/order-details-slice.js';
-export function Modal({children, type}) {
-    const dispatch = useDispatch();
-    const {setIsPopupOpenedOnFalse, clearRelevantIngredient} = ingredientDetailsSlice.actions;
-    const {setIsOrderPopupOpenedOnFalse} = orderDetailsSlice.actions;
 
-    const closePopup = type === 'ingredients' 
-    ? () => {
-        dispatch(setIsPopupOpenedOnFalse());
-        dispatch(clearRelevantIngredient());
-    }
-    : () => {
-        dispatch(setIsOrderPopupOpenedOnFalse());
-    };
+export function Modal({children, closePopup}) {
 
     function closePopupByEsc(evt) {
         if(evt.key === "Escape") {
@@ -52,5 +38,5 @@ export function Modal({children, type}) {
 
 Modal.propTypes = {
     children: PropTypes.node.isRequired,
-    type: PropTypes.string.isRequired,
+    closePopup: PropTypes.func.isRequired,
 };

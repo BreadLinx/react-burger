@@ -1,29 +1,23 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import { Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components'
 import {Modal} from '../modal/modal.js';
 import {Counter} from '../counter/counter.js';
 import {OrderDetails} from '../order-details/order-details.js';
-import {orderDetailsSlice} from '../../services/reducers/order-details-slice.js';
-import {sendOrder} from '../../services/actions/async-actions.js';
+import {sendOrder} from '../../services/actions/sendOrder-action.js';
 import {useDrop} from 'react-dnd';
 import {burgerConstructorSlice} from '../../services/reducers/burger-constructor-slice.js';
+import {orderDetailsSlice} from '../../services/reducers/order-details-slice.js';
 import {ConstructorCard} from '../constructor-card/constructor-card.js';
 
 export function BurgerConstructor() {
     const dispatch = useDispatch();
-    const {isOrderPopupOpened} = useSelector(state => state.orderDetailsReducer);
-    const {burgerStructure, burgerStructureInId} = useSelector(state => state.burgerConstructorReducer);
+    const {orderData, orderRequest} = useSelector(state => state.orderDetailsReducer);
+    const {burgerStructure} = useSelector(state => state.burgerConstructorReducer);
 
-    const {addIngredient, setBurgerStructureInId} = burgerConstructorSlice.actions;
-    const {setIsOrderPopupOpenedOnTrue} = orderDetailsSlice.actions;
-
-    useEffect(() => {
-      if(burgerStructure.bun) {
-        dispatch(setBurgerStructureInId([burgerStructure.bun._id, ...burgerStructure.ingredients.map(item => item._id), burgerStructure.bun._id]));
-      }
-    }, [burgerStructure]);
+    const {addIngredient} = burgerConstructorSlice.actions;
+    const {clearOrderData} = orderDetailsSlice.actions;
 
     const [{hover, canDrop}, dropTarget] = useDrop({
       accept: 'ingredient',
@@ -41,24 +35,53 @@ export function BurgerConstructor() {
       dispatch(addIngredient(card));
     }, [dispatch, burgerStructure]);
 
-    function handleOrder(idArray) {
-      dispatch(setIsOrderPopupOpenedOnTrue());
+    function handleOrder() {
+      const idArray = [burgerStructure.bun._id, ...burgerStructure.ingredients.map(item => item._id), burgerStructure.bun._id];
       dispatch(sendOrder(idArray));
     }
+
+    const isOrderButtonDisabled = useMemo(() => {
+      if(burgerStructure.bun && burgerStructure.ingredients.length !== 0) {
+        return false;
+      } else {
+        return true;
+      }
+    }, [burgerStructure]);
+
+    const isOrderPopupOpened = useMemo(() => {
+      if(orderRequest || orderData) {
+        return true;
+      }
+      return false;
+    }, [orderRequest, orderData]);
+
+    function closePopup() {
+      dispatch(clearOrderData());
+    }
+
+    const counterValue = useMemo(() => {
+      const {bun, ingredients} = burgerStructure;
+      if(bun) {
+        return ingredients.reduce((prevValue, item) => {
+            return prevValue + item.price
+        }, bun.price * 2);
+      }
+      return 0;
+    }, [burgerStructure]);
 
     return (
       <section className={`${burgerConstructorStyles.section}`}>
         <div ref={dropTarget} className={`mt-25 pl-4 ${burgerConstructorStyles.constructorBox} ${hover ? burgerConstructorStyles.constructorBoxOnHover : canDrop ? burgerConstructorStyles.constructorBoxOnCanDrop : ''}`}>
           {
             burgerStructure.bun &&
-            ( 
+            (
               <>
                 <ConstructorElement type="top" isLocked={true} text={`${burgerStructure.bun.name} (верх)`} price={burgerStructure.bun.price} thumbnail={burgerStructure.bun.image}/>
                   <ul id='filling-box' className={`${burgerConstructorStyles.fillingBox}`}>
                     {
                       burgerStructure.ingredients.map((card, index) => {
                         return (
-                          <ConstructorCard key={index} card={card} index={index} />
+                          <ConstructorCard key={card.dragId} card={card} index={index} />
                         )
                       })
                     }  
@@ -69,12 +92,12 @@ export function BurgerConstructor() {
           }
         </div>
         <div className={`${burgerConstructorStyles.total}`}>
-          <Counter />
-          <Button disabled={!burgerStructure.bun ? true : false} onClick={() => {handleOrder(burgerStructureInId)}} type="primary" size="large" htmlType='button'>Нажми на меня</Button>
+          <Counter value={counterValue} />
+          <Button disabled={isOrderButtonDisabled} onClick={handleOrder} type="primary" size="large" htmlType='button'>Нажми на меня</Button>
         </div>
         {
           isOrderPopupOpened &&
-          <Modal type='order'>
+          <Modal closePopup={closePopup}>
             <OrderDetails />
           </Modal>
         }

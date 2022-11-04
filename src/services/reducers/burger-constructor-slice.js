@@ -5,7 +5,6 @@ const initialState = {
         bun: null,
         ingredients: []
     },
-    burgerStructureInId: [],
     dragData: {
         dragStatus: false,
     },
@@ -24,9 +23,6 @@ export const burgerConstructorSlice = createSlice({
                 state.burgerStructure.ingredients.push(action.payload);
             }
         },
-        setBurgerStructureInId: (state, action) => {
-            state.burgerStructureInId = action.payload;
-        },
         deleteIngredient: (state, action) => {
             state.burgerStructure.ingredients.splice(action.payload, 1);
         },
@@ -35,17 +31,20 @@ export const burgerConstructorSlice = createSlice({
             state.burgerStructure.ingredients.splice(action.payload.dragIndex, 0, action.payload.item);
         },
         applyDraggingStyles: (state, action) => {
-            state.burgerStructure.ingredients.forEach(item => {
+            state.burgerStructure.ingredients.map(item => {
+                if(item.dragId === action.payload) {
+                    item.isDragging = true;
+                    return;
+                }
                 item.isDragging = false;
             });
-            state.burgerStructure.ingredients.find(item => item.dragId === action.payload).isDragging = true;
         },
         startDragging: (state) => {
             state.dragData.dragStatus = true;
         },
         endDragging: (state) => {
             state.dragData.dragStatus = false;
-            state.burgerStructure.ingredients.forEach(item => {
+            state.burgerStructure.ingredients.map(item => {
                 item.isDragging = false;
             });
         },

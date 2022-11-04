@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
 import { useInView } from 'react-intersection-observer';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
 import {TabWrapper} from '../tab-wrapper/tab-wrapper.js';
 import {IngredientsChoose} from '../ingredients-choose/ingredients-choose.js';
-import PropTypes from 'prop-types';
 import {Modal} from '../modal/modal.js';
 import {IngredientDetails} from '../ingredient-details/ingredient-details.js';
+import {ingredientDetailsSlice} from '../../services/reducers/ingredient-details-slice.js';
 
 export function BurgerIngredients() {
-    const {isPopupOpened} = useSelector(state => state.ingredientDetailsReducer);
+    const dispatch = useDispatch();
+    const {relevantIngredient} = useSelector(state => state.ingredientDetailsReducer);
     const {ingredients} = useSelector(state => state.burgerIngredientsReducer);
 
     const [bunsRef, inViewBuns] = useInView();
@@ -19,6 +19,12 @@ export function BurgerIngredients() {
     const buns = ingredients.filter(item => item.type === 'bun');
     const sauces = ingredients.filter(item => item.type === 'sauce');
     const mains = ingredients.filter(item => item.type === 'main');
+
+    const {clearRelevantIngredient} = ingredientDetailsSlice.actions;
+
+    function closePopup() {
+      dispatch(clearRelevantIngredient());
+    }
 
     return (
         <section className={`${burgerIngredientsStyles.section}`}>
@@ -30,8 +36,8 @@ export function BurgerIngredients() {
             <IngredientsChoose type='mains' data={mains} ref={mainsRef} />
           </ul>
           {
-          isPopupOpened &&
-          <Modal type='ingredients'>
+          relevantIngredient &&
+          <Modal closePopup={closePopup}>
             <IngredientDetails />
           </Modal>
           }
