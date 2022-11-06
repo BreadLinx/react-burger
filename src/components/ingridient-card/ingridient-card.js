@@ -22,7 +22,7 @@ export function IngridientCard({cardData}) {
     });
 
     useEffect(() => {
-      if(cardData.type === 'bun' && burgerStructure.bun && burgerStructure.bun._id === cardData._id) {
+      if(burgerStructure.bun && burgerStructure.bun._id === cardData._id) {
         setCounter(2);
       } else {
         setCounter(burgerStructure.ingredients.filter(item => item._id === cardData._id).length);

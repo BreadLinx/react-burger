@@ -31,22 +31,14 @@ export const burgerConstructorSlice = createSlice({
             state.burgerStructure.ingredients.splice(action.payload.dragIndex, 0, action.payload.item);
         },
         applyDraggingStyles: (state, action) => {
-            state.burgerStructure.ingredients.map(item => {
-                if(item.dragId === action.payload) {
-                    item.isDragging = true;
-                    return;
-                }
-                item.isDragging = false;
-            });
+            state.burgerStructure.ingredients = state.burgerStructure.ingredients.map(item => ({ ...item, isDragging: item.dragId === action.payload}));
         },
         startDragging: (state) => {
             state.dragData.dragStatus = true;
         },
         endDragging: (state) => {
             state.dragData.dragStatus = false;
-            state.burgerStructure.ingredients.map(item => {
-                item.isDragging = false;
-            });
+            state.burgerStructure.ingredients = state.burgerStructure.ingredients.map(item => ({...item, isDragging: false}));
         },
     }
 });

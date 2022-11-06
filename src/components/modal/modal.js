@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useCallback} from 'react';
 import ReactDOM from 'react-dom';
 import modalStyles from './modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -8,11 +8,11 @@ import PropTypes from 'prop-types';
 
 export function Modal({children, closePopup}) {
 
-    function closePopupByEsc(evt) {
+    const closePopupByEsc = useCallback((evt) => {
         if(evt.key === "Escape") {
             closePopup();
         }
-    }
+    }, [closePopup]);
 
     useEffect(() => {
         document.addEventListener('keydown', closePopupByEsc);
