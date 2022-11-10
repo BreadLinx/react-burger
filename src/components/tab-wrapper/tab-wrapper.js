@@ -1,21 +1,46 @@
-import React from "react";
+import {useEffect, useState} from "react";
+import PropTypes from 'prop-types';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import tabWrapperStyles from './tab-wrapper.module.css';
 
-export function TabWrapper() {
-    const [current, setCurrent] = React.useState('buns');
-    
+export function TabWrapper({inViewBuns, inViewSauces, inViewMains}) {
+
+    const [currentTab, setCurrentTab] = useState('buns');
+
+    function setCurrentTabOnClick(value) {
+      const element = document.getElementById(value);
+      if(element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    useEffect(() => {
+      if(inViewBuns) {
+        setCurrentTab('buns');
+      } else if(inViewSauces) {
+        setCurrentTab('sauces');
+      } else if(inViewMains) {
+        setCurrentTab('mains');
+      }
+    }, [inViewBuns, inViewSauces, inViewMains]);
+
     return (
         <div className={`mt-5 ${tabWrapperStyles.box}`}>
-          <Tab value="buns" active={current === 'buns'} onClick={setCurrent}>
+          <Tab value="buns" active={currentTab === 'buns'} onClick={setCurrentTabOnClick}>
             Булки
           </Tab>
-          <Tab value="sauces" active={current === 'sauces'} onClick={setCurrent}>
+          <Tab value="sauces" active={currentTab === 'sauces'} onClick={setCurrentTabOnClick}>
             Соусы
           </Tab>
-          <Tab value="fillings" active={current === 'fillings'} onClick={setCurrent}>
+          <Tab value="mains" active={currentTab === 'mains'} onClick={setCurrentTabOnClick}>
             Начинки
           </Tab>
         </div>
     );
 }
+
+TabWrapper.propTypes = {
+  inViewBuns: PropTypes.bool.isRequired,
+  inViewSauces: PropTypes.bool.isRequired,
+  inViewMains: PropTypes.bool.isRequired,
+};

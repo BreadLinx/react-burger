@@ -1,0 +1,44 @@
+@keyframes flashingSkeleton {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.cardSkeleton {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    width: 272px;
+    height: 208px;
+    box-sizing: border-box;
+    animation-duration: .5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+}
+
+.imageSkeleton {
+    width: 240px;
+    height: 120px;
+    border-radius: 17px;
+    background-color: #19191f;
+}
+
+.priceSkeleton {
+    width: 150px;
+    height: 24px;
+    border-radius: 10px;
+    background-color: #19191f;
+}
+
+.textSkeleton {
+    width: 220px;
+    height: 24px;
+    border-radius: 10px;
+    background-color: #19191f;
+}

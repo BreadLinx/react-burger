@@ -1,79 +1,87 @@
-import React, { useContext, useState, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import burgerConstructorStyles from './burger-constructor.module.css';
-import { Button, DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components'
-import image from '../../images/bun-01.svg';
-import {ingridientPropTypes} from '../../utils/prop-types.js';
+import { Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components'
 import {Modal} from '../modal/modal.js';
 import {Counter} from '../counter/counter.js';
 import {OrderDetails} from '../order-details/order-details.js';
-import {DataContext} from '../../services/dataContex.js';
-import {sendOrderRequest} from '../../utils/burger-api.js';
+import {sendOrder} from '../../services/actions/sendOrder-action.js';
+import {useDrop} from 'react-dnd';
+import {burgerConstructorSlice} from '../../services/reducers/burger-constructor-slice.js';
+import {orderDetailsSlice} from '../../services/reducers/order-details-slice.js';
+import {ConstructorCard} from '../constructor-card/constructor-card.js';
 
 export function BurgerConstructor() {
-    const [isOrderModalOpened, setIsOrderModalOpened] = useState(false);
-    const [data] = useContext(DataContext);
+    const dispatch = useDispatch();
+    const {orderData, orderRequest} = useSelector(state => state.orderDetailsReducer);
+    const {burgerStructure} = useSelector(state => state.burgerConstructorReducer);
 
-    const bun = data.filter(item => item.type === 'bun')[0];
-    const sauces = data.filter(item => item.type !== 'bun');
+    const {addIngredient} = burgerConstructorSlice.actions;
+    const {clearOrderData} = orderDetailsSlice.actions;
 
-    const [burgerStructure, setBurgerStructure] = useState({
-      bun: {},
-      ingridients: []
+    const [{hover, canDrop}, dropTarget] = useDrop({
+      accept: 'ingredient',
+      drop(item) {
+        handleDrop(item);
+      },
+      collect: monitor => ({
+        hover: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      })
     });
-    const [isLoading, setIsLoading] = useState(false);
-    const [orderData, setOrderData] = useState(null);
-    const [burgerStructureInId, setBurgerStructureInId] = useState([]);
 
-    React.useEffect(() => {
-      setBurgerStructure({
-        ...burgerStructure,
-        bun,
-        ingridients: sauces
-      });
-    }, [bun]);
+    const handleDrop = useCallback((item) => {
+      const card = item.type !== 'bun' ? {...item, dragId: burgerStructure.ingredients.length, isDragging: false} : {...item};
+      dispatch(addIngredient(card));
+    }, [dispatch, burgerStructure]);
 
-    React.useEffect(() => {
-      if(burgerStructure.bun) {
-        setBurgerStructureInId([burgerStructure.bun._id, ...burgerStructure.ingridients.map(item => item._id), burgerStructure.bun._id]);
+    function handleOrder() {
+      const idArray = [burgerStructure.bun._id, ...burgerStructure.ingredients.map(item => item._id), burgerStructure.bun._id];
+      dispatch(sendOrder(idArray));
+    }
+
+    const isOrderButtonDisabled = useMemo(() => {
+      if(burgerStructure.bun && burgerStructure.ingredients.length !== 0) {
+        return false;
+      } else {
+        return true;
       }
     }, [burgerStructure]);
 
+    const isOrderPopupOpened = useMemo(() => {
+      if(orderRequest || orderData) {
+        return true;
+      }
+      return false;
+    }, [orderRequest, orderData]);
+
     function closePopup() {
-      setIsOrderModalOpened(false);
+      dispatch(clearOrderData());
     }
 
-    function handleOrder(idArray) {
-      setIsLoading(true);
-      setIsOrderModalOpened(true);
-      sendOrderRequest(idArray)
-      .then((res) => {
-        setOrderData({
-          ...orderData,
-          name: res.name,
-          orderNumber: res.order.number
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-    }
+    const counterValue = useMemo(() => {
+      const {bun, ingredients} = burgerStructure;
+      if(bun) {
+        return ingredients.reduce((prevValue, item) => {
+            return prevValue + item.price
+        }, bun.price * 2);
+      }
+      return 0;
+    }, [burgerStructure]);
 
     return (
       <section className={`${burgerConstructorStyles.section}`}>
-        <div className={`mt-25 pl-4 ${burgerConstructorStyles.constructorBox}`}>
+        <div ref={dropTarget} className={`mt-25 pl-4 ${burgerConstructorStyles.constructorBox} ${hover ? burgerConstructorStyles.constructorBoxOnHover : canDrop ? burgerConstructorStyles.constructorBoxOnCanDrop : ''}`}>
           {
             burgerStructure.bun &&
-            ( 
+            (
               <>
                 <ConstructorElement type="top" isLocked={true} text={`${burgerStructure.bun.name} (верх)`} price={burgerStructure.bun.price} thumbnail={burgerStructure.bun.image}/>
-                  <ul className={`${burgerConstructorStyles.fillingBox}`}>
+                  <ul id='filling-box' className={`${burgerConstructorStyles.fillingBox}`}>
                     {
-                      burgerStructure.ingridients.map((item, index) => {
+                      burgerStructure.ingredients.map((card, index) => {
                         return (
-                          <li key={index} className={`${burgerConstructorStyles.fillingBoxItem}`}><DragIcon type="primary" /><ConstructorElement text={item.name} price={item.price} thumbnail={item.image}/></li>
+                          <ConstructorCard key={card.dragId} card={card} index={index} />
                         )
                       })
                     }  
@@ -84,13 +92,13 @@ export function BurgerConstructor() {
           }
         </div>
         <div className={`${burgerConstructorStyles.total}`}>
-          <Counter burgerStructure={burgerStructure} />
-          <Button onClick={() => {handleOrder(burgerStructureInId)}} type="primary" size="large" htmlType='button'>Нажми на меня</Button>
+          <Counter value={counterValue} />
+          <Button disabled={isOrderButtonDisabled} onClick={handleOrder} type="primary" size="large" htmlType='button'>Нажми на меня</Button>
         </div>
         {
-          isOrderModalOpened &&
+          isOrderPopupOpened &&
           <Modal closePopup={closePopup}>
-            <OrderDetails isLoading={isLoading} orderData={orderData} />
+            <OrderDetails />
           </Modal>
         }
       </section>

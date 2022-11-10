@@ -1,41 +1,46 @@
-import React from 'react';
+import { useInView } from 'react-intersection-observer';
+import {useSelector, useDispatch} from 'react-redux';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
 import {TabWrapper} from '../tab-wrapper/tab-wrapper.js';
 import {IngredientsChoose} from '../ingredients-choose/ingredients-choose.js';
-import PropTypes from 'prop-types';
 import {Modal} from '../modal/modal.js';
 import {IngredientDetails} from '../ingredient-details/ingredient-details.js';
+import {ingredientDetailsSlice} from '../../services/reducers/ingredient-details-slice.js';
 
-export function BurgerIngredients({data}) {
-    const [isIngredientModalOpened, setIsIngredientModalOpened] = React.useState(false);
-    const [ingredientDetailsData, setIngredientDetailsData] = React.useState(null);
-    const buns = data.filter(item => item.type === 'bun');
-    const sauces = data.filter(item => item.type === 'sauce');
-    const mains = data.filter(item => item.type === 'main');
+export function BurgerIngredients() {
+    const dispatch = useDispatch();
+    const {relevantIngredient} = useSelector(state => state.ingredientDetailsReducer);
+    const {ingredients} = useSelector(state => state.burgerIngredientsReducer);
+
+    const [bunsRef, inViewBuns] = useInView();
+    const [saucesRef, inViewSauces] = useInView();
+    const [mainsRef, inViewMains] = useInView();
+
+    const buns = ingredients.filter(item => item.type === 'bun');
+    const sauces = ingredients.filter(item => item.type === 'sauce');
+    const mains = ingredients.filter(item => item.type === 'main');
+
+    const {clearRelevantIngredient} = ingredientDetailsSlice.actions;
 
     function closePopup() {
-      setIsIngredientModalOpened(false);
+      dispatch(clearRelevantIngredient());
     }
 
     return (
         <section className={`${burgerIngredientsStyles.section}`}>
           <h1 className={`text text_type_main-large mt-10`}>Соберите бургер</h1>
-          <TabWrapper></TabWrapper>
+          <TabWrapper inViewBuns={inViewBuns} inViewSauces={inViewSauces} inViewMains={inViewMains} ></TabWrapper>
           <ul className={burgerIngredientsStyles.ingredientsChooseWrapper}>
-            <IngredientsChoose name='Булки' popupEditFunctions={{setIsIngredientModalOpened, setIngredientDetailsData}} data={buns} />
-            <IngredientsChoose name='Соусы' popupEditFunctions={{setIsIngredientModalOpened, setIngredientDetailsData}} data={sauces} />
-            <IngredientsChoose name='Начинки' popupEditFunctions={{setIsIngredientModalOpened, setIngredientDetailsData}} data={mains} />
+            <IngredientsChoose type='buns' data={buns} ref={bunsRef} />
+            <IngredientsChoose type='sauces' data={sauces} ref={saucesRef} />
+            <IngredientsChoose type='mains' data={mains} ref={mainsRef} />
           </ul>
           {
-          isIngredientModalOpened &&
+          relevantIngredient &&
           <Modal closePopup={closePopup}>
-            <IngredientDetails ingredientDetails={ingredientDetailsData} />
+            <IngredientDetails />
           </Modal>
           }
         </section>
     );
 }
-
-BurgerIngredients.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired
-}; 

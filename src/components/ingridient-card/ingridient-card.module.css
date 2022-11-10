@@ -19,3 +19,7 @@
 .card__description {
     text-align: center;
 }
+
+.onDrag {
+    opacity: .5;
+}
