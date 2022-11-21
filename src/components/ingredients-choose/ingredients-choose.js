@@ -1,5 +1,5 @@
 import {forwardRef} from 'react';
-import ingredientsChooseStyles from './ingredients-choose.module.css';
+import styles from './ingredients-choose.module.css';
 import {IngridientCard} from '../ingridient-card/ingridient-card.js';
 import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
@@ -13,7 +13,7 @@ export const IngredientsChoose = forwardRef(({type, data}, ref) => {
   return (
     <li id={type} className='pt-10'>
       <h2 ref={ref} className={`text text_type_main-medium mb-6`}>{name}</h2>
-      <ul className={ingredientsChooseStyles.cardsWrapper}>
+      <ul className={styles.cardsWrapper}>
         {
           ingredientsRequest ?
           <>

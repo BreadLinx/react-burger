@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import burgerConstructorStyles from './burger-constructor.module.css';
+import styles from './burger-constructor.module.css';
 import { Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components'
 import {Modal} from '../modal/modal.js';
 import {Counter} from '../counter/counter.js';
@@ -70,14 +70,14 @@ export function BurgerConstructor() {
     }, [burgerStructure]);
 
     return (
-      <section className={`${burgerConstructorStyles.section}`}>
-        <div ref={dropTarget} className={`mt-25 pl-4 ${burgerConstructorStyles.constructorBox} ${hover ? burgerConstructorStyles.constructorBoxOnHover : canDrop ? burgerConstructorStyles.constructorBoxOnCanDrop : ''}`}>
+      <section className={`${styles.section}`}>
+        <div ref={dropTarget} className={`mt-25 pl-4 ${styles.constructorBox} ${hover ? styles.constructorBoxOnHover : canDrop ? styles.constructorBoxOnCanDrop : ''}`}>
           {
             burgerStructure.bun &&
             (
               <>
                 <ConstructorElement type="top" isLocked={true} text={`${burgerStructure.bun.name} (верх)`} price={burgerStructure.bun.price} thumbnail={burgerStructure.bun.image}/>
-                  <ul id='filling-box' className={`${burgerConstructorStyles.fillingBox}`}>
+                  <ul id='filling-box' className={`${styles.fillingBox}`}>
                     {
                       burgerStructure.ingredients.map((card, index) => {
                         return (
@@ -91,7 +91,7 @@ export function BurgerConstructor() {
             )
           }
         </div>
-        <div className={`${burgerConstructorStyles.total}`}>
+        <div className={`${styles.total}`}>
           <Counter value={counterValue} />
           <Button disabled={isOrderButtonDisabled} onClick={handleOrder} type="primary" size="large" htmlType='button'>Нажми на меня</Button>
         </div>

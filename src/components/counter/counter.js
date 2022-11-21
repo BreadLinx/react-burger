@@ -1,10 +1,10 @@
-import counterStyles from './counter.module.css';
+import styles from './counter.module.css';
 import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components'
 import {PropTypes} from 'prop-types';
 
 export function Counter({value}) {
     return (
-        <span className={`text text_type_digits-medium ${counterStyles.totalCounter}`}>{value}<CurrencyIcon type="primary" /></span>
+        <span className={`text text_type_digits-medium ${styles.totalCounter}`}>{value}<CurrencyIcon type="primary" /></span>
     );
 }
 

@@ -1,6 +1,6 @@
 import {useEffect, useCallback} from 'react';
 import ReactDOM from 'react-dom';
-import modalStyles from './modal.module.css';
+import styles from './modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import {ModalOverlay} from '../modal-overlay/modal-overlay.js';
 import {modalRoot} from '../../index.js';
@@ -26,8 +26,8 @@ export function Modal({children, closePopup}) {
         (
             <>
                 <ModalOverlay closePopup={closePopup} />
-                <div className={modalStyles.modal}>
-                    <button onClick={closePopup} type='button' className={modalStyles.closeButton}><CloseIcon type="primary" /></button>
+                <div className={styles.modal}>
+                    <button onClick={closePopup} type='button' className={styles.closeButton}><CloseIcon type="primary" /></button>
                     {children}
                 </div>
             </>

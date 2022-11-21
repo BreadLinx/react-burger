@@ -1,0 +1,38 @@
+.section {
+  width: 100%;
+  height: calc(100vh - 88px);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+}
+
+.loginBox {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.form {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.otherStuffBox {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.link {
+  color: #4C4CFF;
+  text-decoration: none;
+}
