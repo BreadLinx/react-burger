@@ -1,3 +1,5 @@
+import {getCookie, setCookie} from './cookies.js';
+
 const headers = {
     'Content-Type': 'application/json'
 };
@@ -15,6 +17,42 @@ const USER_DATA_URL = `${BASE_API_URL}/auth/user`;
 
 function checkResponse(res) {
     return res.ok ? res.json() : Promise.reject(res);
+}
+
+async function fetchWithRefresh(url, options) {
+  try {
+    const res = await fetch(url, options);
+    return await checkResponse(res);
+  } catch(error) {
+    console.log(error.message);
+    if(error.status === 403) {
+        const refreshData = await sendRefreshRequest();
+        if(!refreshData.success) {
+            Promise.reject(refreshData);
+        }
+        const authToken = refreshData.authToken.split('Bearer ')[1];
+        setCookie('authToken', authToken);
+        setCookie('refreshToken', refreshData.refreshToken);
+
+        options.headers.authorization = refreshData.authToken;
+
+        const res = await fetch(url, options);
+        return await checkResponse(res);
+    } else {
+        Promise.reject(error);
+    }
+  }
+}
+
+function sendRefreshRequest() {
+    return fetch(REFRESH_URL, {
+        headers,
+        method: 'POST',
+        body: JSON.stringify({
+          "token": getCookie('refreshToken')
+        })
+    })
+    .then(checkResponse)
 }
 
 export function getIngredients() {
@@ -84,46 +122,33 @@ export function sendLoginRequest(email, password) {
     .then(checkResponse)
 }
 
-export function sendRefreshRequest(refreshToken) {
-    return fetch(REFRESH_URL, {
-        headers,
-        method: 'POST',
-        body: JSON.stringify({
-          "token": refreshToken
-        })
-    })
-    .then(checkResponse)
-}
-
-export function sendLogoutRequest(refreshToken) {
+export function sendLogoutRequest() {
     return fetch(LOGOUT_URL, {
         headers,
         method: 'POST',
         body: JSON.stringify({
-          "token": refreshToken
+          "token": getCookie('refreshToken')
         })
     })
     .then(checkResponse)
 }
 
-export function getUserDataRequest(authToken) {
-    return fetch(USER_DATA_URL, {
+export function getUserDataRequest() {
+    return fetchWithRefresh(USER_DATA_URL, {
         headers: {
             ...headers,
-            authorization: `Bearer ${authToken}`
+            authorization: `Bearer ${getCookie('authToken')}`
         },
         method: 'GET'
-    })
-    .then(checkResponse)
+    });
 }
 
-export function updateUserDataRequest(authToken) {
-    return fetch(USER_DATA_URL, {
+export function updateUserDataRequest() {
+    return fetchWithRefresh(USER_DATA_URL, {
         headers: {
             ...headers,
-            authorization: `Bearer ${authToken}`
+            authorization: `Bearer ${getCookie('authToken')}`
         },
         method: 'PATCH'
-    })
-    .then(checkResponse)
+    });
 }

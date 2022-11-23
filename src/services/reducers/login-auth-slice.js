@@ -1,7 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {sendRegistration} from '../actions/sendRegistration-action.js';
 import {sendLogin} from '../actions/sendLogin-action.js';
-import {sendRefreshToken} from '../actions/sendRefreshToken-action.js';
 import {sendLogout} from '../actions/sendLogout-action.js';
 import {getUserData} from '../actions/getUserData-action.js';
 import {setCookie} from '../../utils/cookies.js';
@@ -18,9 +17,6 @@ const initialState = {
     loginRequest: false,
     loginError: false,
     loginSuccess: false,
-    refreshTokenRequest: false,
-    refreshTokenError: false,
-    refreshTokenSuccess: false,
     logoutRequest: false,
     logoutError: false,
     logoutSuccess: false,
@@ -78,26 +74,7 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.loginRequest = false;
         state.requestStatus.loginError = true;
       })
-      .addCase(sendRefreshToken.pending, state => {
-        state.requestStatus.refreshTokenRequest = true;
-        state.requestStatus.refreshTokenError = false;
-        state.requestStatus.refreshTokenSuccess = false;
-      })
-      .addCase(sendRefreshToken.fulfilled, (state, action) => {
-        state.requestStatus.refreshTokenRequest = false;
-        state.requestStatus.refreshTokenSuccess = true;
 
-        console.log(action.payload);
-
-        const authToken = action.payload.accessToken.split('Bearer ')[1];
-        const refreshToken = action.payload.refreshToken;
-        setCookie('authToken', authToken);
-        setCookie('refreshToken', refreshToken);
-      })
-      .addCase(sendRefreshToken.rejected, state => {
-        state.requestStatus.refreshTokenRequest = false;
-        state.requestStatus.refreshTokenError = true;
-      })
       .addCase(sendLogout.pending, state => {
         state.requestStatus.logoutRequest = true;
         state.requestStatus.logoutError = false;
@@ -106,11 +83,15 @@ export const loginAuthSlice = createSlice({
       .addCase(sendLogout.fulfilled, state => {
         state.requestStatus.logoutRequest = false;
         state.requestStatus.logoutSuccess = true;
+
+        state.user.name = '';
+        state.user.email = '';
       })
       .addCase(sendLogout.rejected, state => {
         state.requestStatus.logoutRequest = false;
         state.requestStatus.logoutError = true;
       })
+
       .addCase(getUserData.pending, state => {
         state.requestStatus.getUserDataRequest = true;
         state.requestStatus.getUserDataError = false;

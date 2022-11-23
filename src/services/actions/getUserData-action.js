@@ -1,27 +1,16 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {getUserDataRequest, sendRefreshRequest} from '../../utils/burger-api.js';
-import {getCookie} from '../../utils/cookies.js';
+import {getUserDataRequest} from '../../utils/burger-api.js';
 
 export const getUserData = createAsyncThunk(
     'loginAuthSlice/getUserData',
-    async (authToken) => {
+    async () => {
         let data;
-        await getUserDataRequest(authToken)
+        await getUserDataRequest()
         .then((res) => {
             data = res;
         })
         .catch((err) => {
-            if(err.status !== 403) {
-                alert(`При попытке загрузки данных произошла ошибка ${err.status}. Попробуйте еще раз.`);
-            }
-            sendRefreshRequest(getCookie('refreshToken'))
-            .then((res) => {
-                console.log(res);
-            });
-            // if(!refreshData.success) {
-            //     Promise.reject(refreshData);
-            // }
-            // console.log(refreshData);
+            alert(err);
         });
         return data;
     }

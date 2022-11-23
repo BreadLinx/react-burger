@@ -9,21 +9,19 @@ import {ForgotPasswordPage} from './pages/forgot-password-page.js';
 import {ResetPasswordPage} from './pages/reset-password-page.js';
 import {ProfilePage} from './pages/profile-page.js';
 import {NotFound404} from './pages/not-found-404.js';
-import {getCookie} from './utils/cookies.js'; 
 import {getUserData} from './services/actions/getUserData-action.js';
-import {sendRefreshToken} from './services/actions/sendRefreshToken-action.js';
+import {getCookie} from './utils/cookies.js';
+import {ProtectedRoute} from './components/protected-route/protected-route.js';
 
 export function App() {
     const dispatch = useDispatch();
   
     useEffect(() => {
       dispatch(getIngridients());
-      // const authToken = getCookie('authToken');
-      // if(authToken) {
-      //   dispatch(getUserData(authToken));
-      // }
-      console.log(getCookie('refreshToken'));
-      dispatch(sendRefreshToken(getCookie('refreshToken')));
+      const authToken = getCookie('authToken');
+      if(authToken) {
+        dispatch(getUserData());
+      }
     }, []);
 
     return (
@@ -44,9 +42,12 @@ export function App() {
           <Route path='/reset-password' exact={true}>
             <ResetPasswordPage/>
           </Route>
-          <Route path='/profile' exact={true}>
+          {/* <Route path='/profile' exact={true}>
             <ProfilePage/>
-          </Route>
+          </Route> */}
+          <ProtectedRoute path='/profile' exact={true}>
+            <ProfilePage/>
+          </ProtectedRoute>
           <Route>
             <NotFound404/>
           </Route>

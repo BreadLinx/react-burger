@@ -3,9 +3,9 @@ import {updateUserDataRequest} from '../../utils/burger-api.js';
 
 export const updateUserData = createAsyncThunk(
     'loginAuthSlice/updateUserData',
-    async (authToken) => {
+    async () => {
         let data;
-        await updateUserDataRequest(authToken)
+        await updateUserDataRequest()
         .then((res) => {
             data = res;
         })

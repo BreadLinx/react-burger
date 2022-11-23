@@ -3,9 +3,9 @@ import {sendLogoutRequest} from '../../utils/burger-api.js';
 
 export const sendLogout = createAsyncThunk(
     'loginAuthSlice/sendLogout',
-    async (refreshToken) => {
+    async () => {
         let data;
-        await sendLogoutRequest(refreshToken)
+        await sendLogoutRequest()
         .then((res) => {
             data = res;
         })

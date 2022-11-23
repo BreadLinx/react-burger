@@ -16,6 +16,15 @@
   text-decoration: none;
 }
 
+
+.button {
+  text-decoration: none;
+  border: 0;
+  background-color: initial;
+  text-align: left;
+  cursor: pointer;
+}
+
 .activeLink {
   color: #fff;
 }
