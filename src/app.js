@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useLocation, useHistory } from "react-router-dom";
 import { getIngridients } from "./services/actions/getIngridients-action.js";
 import { MainPage } from "./pages/main-page.js";
@@ -16,13 +16,19 @@ import { ProtectedRoute } from "./components/protected-route/protected-route.js"
 import { loginAuthSlice } from "./services/reducers/login-auth-slice.js";
 import { Modal } from "./components/modal/modal.js";
 import { IngredientDetails } from "./components/ingredient-details/ingredient-details.js";
+import { errorSlice } from "./services/reducers/error-slice.js";
 
 export function App() {
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
 
+  const { ingredientsError } = useSelector(
+    state => state.burgerIngredientsReducer,
+  );
+
   const { makeUserAuthorizedTrue } = loginAuthSlice.actions;
+  const { showError, hideError } = errorSlice.actions;
 
   useEffect(() => {
     dispatch(getIngridients());
@@ -32,6 +38,19 @@ export function App() {
       dispatch(getUserData());
     }
   }, []);
+
+  useEffect(() => {
+    if (ingredientsError) {
+      dispatch(
+        showError(
+          "При выполнении запроса произошла ошибка. Немного подождите или попробуйте перезагрузить страницу.",
+        ),
+      );
+      setTimeout(() => {
+        dispatch(hideError());
+      }, 10000);
+    }
+  }, [ingredientsError, dispatch, showError, hideError]);
 
   const background = location.state?.background;
 

@@ -1,15 +1,37 @@
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./profile-page-nav.module.css";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { sendLogout } from "../../services/actions/sendLogout-action.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { errorSlice } from "../../services/reducers/error-slice.js";
 
 export function ProfilePageNav({ activeLink = "profile" }) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const { error, errorMessage } = useSelector(
+    state => state.loginAuthReducer.requestStatus.logout,
+  );
+
+  const { showError, hideError } = errorSlice.actions;
+
   const logOut = useCallback(() => {
     dispatch(sendLogout());
-  }, [history, sendLogout]);
+  }, [sendLogout, dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      switch (errorMessage) {
+        default:
+          dispatch(
+            showError(
+              `Ошибка при попытке выхода из личного кабинета. Попробуйте еще раз. Код ошибки: ${errorMessage}`,
+            ),
+          );
+      }
+      setTimeout(() => {
+        dispatch(hideError());
+      }, 10000);
+    }
+  }, [error, errorMessage, dispatch, showError, hideError]);
 
   return (
     <div className={`${styles.box} mt-30 mr-15`}>
@@ -23,7 +45,7 @@ export function ProfilePageNav({ activeLink = "profile" }) {
           Профиль
         </Link>
         <Link
-          to="/login"
+          to="/"
           className={`text text_type_main-medium ${styles.link} ${
             activeLink === "history" ? styles.activeLink : "text_color_inactive"
           }`}
