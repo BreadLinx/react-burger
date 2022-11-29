@@ -24,12 +24,12 @@ async function fetchWithRefresh(url, options) {
     const res = await fetch(url, options);
     return await checkResponse(res);
   } catch(error) {
-    console.log(error.message);
     if(error.status === 403) {
         const refreshData = await sendRefreshRequest();
-        if(!refreshData.success) {
-            Promise.reject(refreshData);
-        }
+        // const refreshData = await refreshResponse.json();
+        // if(!refreshData.success) {
+        //     Promise.reject(refreshData);
+        // }
         const authToken = refreshData.authToken.split('Bearer ')[1];
         setCookie('authToken', authToken);
         setCookie('refreshToken', refreshData.refreshToken);

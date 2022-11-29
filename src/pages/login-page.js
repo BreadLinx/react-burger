@@ -1,23 +1,21 @@
-import {MainLayout} from '../layouts/main-layout.js';
-import {LoginComponent} from '../components/login-component/login-component.js';
-import {useSelector} from 'react-redux';
-import {Redirect, useParams} from 'react-router-dom';
+import { MainLayout } from "../layouts/main-layout.js";
+import { LoginComponent } from "../components/login-component/login-component.js";
+import { useSelector } from "react-redux";
+import { Redirect, useLocation } from "react-router-dom";
 
 export function LoginPage() {
-  const {name} = useSelector(state => state.loginAuthReducer.user);
-  const params = useParams();
-
-  console.log(params);
-
-  // if(name) {
-  //   return (
-  //     <Redirect to={state?.from || '/'} />
-  //   );
-  // }
+  const { name } = useSelector(state => state.loginAuthReducer.user);
+  const { state } = useLocation();
 
   return (
-    <MainLayout>
-      <LoginComponent/>
-    </MainLayout>
+    <>
+      {name ? (
+        <Redirect to={state?.from?.pathname || "/"} />
+      ) : (
+        <MainLayout>
+          <LoginComponent />
+        </MainLayout>
+      )}
+    </>
   );
 }

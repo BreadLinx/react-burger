@@ -1,14 +1,15 @@
-import {createSlice} from '@reduxjs/toolkit';
-import {sendRegistration} from '../actions/sendRegistration-action.js';
-import {sendLogin} from '../actions/sendLogin-action.js';
-import {sendLogout} from '../actions/sendLogout-action.js';
-import {getUserData} from '../actions/getUserData-action.js';
-import {setCookie} from '../../utils/cookies.js';
+import { createSlice } from "@reduxjs/toolkit";
+import { sendRegistration } from "../actions/sendRegistration-action.js";
+import { sendLogin } from "../actions/sendLogin-action.js";
+import { sendLogout } from "../actions/sendLogout-action.js";
+import { getUserData } from "../actions/getUserData-action.js";
+import { setCookie, deleteCookie } from "../../utils/cookies.js";
 
 const initialState = {
   user: {
-      email: '',
-      name: '',
+    isUserAuthorized: false,
+    email: "",
+    name: "",
   },
   requestStatus: {
     registrationRequest: false,
@@ -23,14 +24,21 @@ const initialState = {
     getUserDataRequest: false,
     getUserDataError: false,
     getUserDataSuccess: false,
-  }
+  },
 };
 
 export const loginAuthSlice = createSlice({
-  name: 'loginAuthSlice',
+  name: "loginAuthSlice",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
+  reducers: {
+    makeUserAuthorizedTrue: state => {
+      state.user.isUserAuthorized = true;
+    },
+    makeUserAuthorizedFalse: state => {
+      state.user.isUserAuthorized = false;
+    },
+  },
+  extraReducers: builder => {
     builder
       .addCase(sendRegistration.pending, state => {
         state.requestStatus.registrationRequest = true;
@@ -41,11 +49,12 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.registrationRequest = false;
         state.requestStatus.registrationSuccess = true;
 
-        const authToken = action.payload.accessToken.split('Bearer ')[1];
+        const authToken = action.payload.accessToken.split("Bearer ")[1];
         const refreshToken = action.payload.refreshToken;
-        setCookie('authToken', authToken);
-        setCookie('refreshToken', refreshToken);
+        setCookie("authToken", authToken);
+        setCookie("refreshToken", refreshToken);
 
+        state.user.isUserAuthorized = true;
         state.user.email = action.payload.user.email;
         state.user.name = action.payload.user.name;
       })
@@ -62,11 +71,12 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.loginRequest = false;
         state.requestStatus.loginSuccess = true;
 
-        const authToken = action.payload.accessToken.split('Bearer ')[1];
+        const authToken = action.payload.accessToken.split("Bearer ")[1];
         const refreshToken = action.payload.refreshToken;
-        setCookie('authToken', authToken);
-        setCookie('refreshToken', refreshToken);
+        setCookie("authToken", authToken);
+        setCookie("refreshToken", refreshToken);
 
+        state.user.isUserAuthorized = true;
         state.user.email = action.payload.user.email;
         state.user.name = action.payload.user.name;
       })
@@ -74,7 +84,6 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.loginRequest = false;
         state.requestStatus.loginError = true;
       })
-
       .addCase(sendLogout.pending, state => {
         state.requestStatus.logoutRequest = true;
         state.requestStatus.logoutError = false;
@@ -84,14 +93,16 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.logoutRequest = false;
         state.requestStatus.logoutSuccess = true;
 
-        state.user.name = '';
-        state.user.email = '';
+        state.user.isUserAuthorized = false;
+        state.user.name = "";
+        state.user.email = "";
+        deleteCookie("authToken");
+        deleteCookie("refreshToken");
       })
       .addCase(sendLogout.rejected, state => {
         state.requestStatus.logoutRequest = false;
         state.requestStatus.logoutError = true;
       })
-
       .addCase(getUserData.pending, state => {
         state.requestStatus.getUserDataRequest = true;
         state.requestStatus.getUserDataError = false;
@@ -107,7 +118,7 @@ export const loginAuthSlice = createSlice({
       .addCase(getUserData.rejected, state => {
         state.requestStatus.getUserDataRequest = false;
         state.requestStatus.getUserDataError = true;
-      })
+      });
   },
 });
 
