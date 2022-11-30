@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styles from "./burger-constructor.module.css";
 import {
   Button,
@@ -13,9 +14,12 @@ import { useDrop } from "react-dnd";
 import { burgerConstructorSlice } from "../../services/reducers/burger-constructor-slice.js";
 import { orderDetailsSlice } from "../../services/reducers/order-details-slice.js";
 import { ConstructorCard } from "../constructor-card/constructor-card.js";
+import { errorSlice } from "../../services/reducers/error-slice.js";
 
 export function BurgerConstructor() {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const { orderData, orderRequest } = useSelector(
     state => state.orderDetailsReducer,
   );
@@ -23,8 +27,13 @@ export function BurgerConstructor() {
     state => state.burgerConstructorReducer,
   );
 
+  const { isUserAuthorized } = useSelector(
+    state => state.loginAuthReducer.user,
+  );
+
   const { addIngredient } = burgerConstructorSlice.actions;
   const { clearOrderData } = orderDetailsSlice.actions;
+  const { showError, hideError } = errorSlice.actions;
 
   const [{ hover, canDrop }, dropTarget] = useDrop({
     accept: "ingredient",
@@ -49,16 +58,28 @@ export function BurgerConstructor() {
           : { ...item };
       dispatch(addIngredient(card));
     },
-    [dispatch, burgerStructure],
+    [dispatch, burgerStructure, addIngredient],
   );
 
   function handleOrder() {
-    const idArray = [
-      burgerStructure.bun._id,
-      ...burgerStructure.ingredients.map(item => item._id),
-      burgerStructure.bun._id,
-    ];
-    dispatch(sendOrder(idArray));
+    if (isUserAuthorized) {
+      const idArray = [
+        burgerStructure.bun._id,
+        ...burgerStructure.ingredients.map(item => item._id),
+        burgerStructure.bun._id,
+      ];
+      dispatch(sendOrder(idArray));
+    } else {
+      dispatch(
+        showError(
+          "Чтобы создать заказ необходимо пройти авторизацию. Переадресация на страницу авторизации.",
+        ),
+      );
+      setTimeout(() => {
+        dispatch(hideError());
+      }, 10000);
+      history.replace({ pathname: "/login" });
+    }
   }
 
   const isOrderButtonDisabled = useMemo(() => {
@@ -141,7 +162,7 @@ export function BurgerConstructor() {
           size="large"
           htmlType="button"
         >
-          Нажми на меня
+          Оформить заказ
         </Button>
       </div>
       {isOrderPopupOpened && (

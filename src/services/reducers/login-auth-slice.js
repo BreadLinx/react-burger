@@ -159,9 +159,10 @@ export const loginAuthSlice = createSlice({
         state.user.email = action.payload.user.email;
         state.user.name = action.payload.user.name;
       })
-      .addCase(updateUserData.rejected, state => {
+      .addCase(updateUserData.rejected, (state, action) => {
         state.requestStatus.updateUserData.request = false;
         state.requestStatus.updateUserData.error = true;
+        state.requestStatus.updateUserData.errorMessage = action.error.message;
       });
   },
 });

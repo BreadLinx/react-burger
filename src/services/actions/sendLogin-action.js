@@ -3,7 +3,7 @@ import { sendLoginRequest } from "../../utils/burger-api.js";
 
 export const sendLogin = createAsyncThunk(
   "loginAuthSlice/sendLogin",
-  async ({ emailValue, passwordValue }) => {
-    return await sendLoginRequest(emailValue, passwordValue);
+  async options => {
+    return await sendLoginRequest(options);
   },
 );

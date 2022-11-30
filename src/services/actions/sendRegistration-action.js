@@ -3,7 +3,7 @@ import { sendRegistrationRequest } from "../../utils/burger-api.js";
 
 export const sendRegistration = createAsyncThunk(
   "loginAuthSlice/sendRegistration",
-  async ({ nameValue, emailValue, passwordValue }) => {
-    return await sendRegistrationRequest(nameValue, emailValue, passwordValue);
+  async options => {
+    return await sendRegistrationRequest(options);
   },
 );

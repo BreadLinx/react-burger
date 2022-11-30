@@ -1,25 +1,18 @@
 import { Input } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./profile-component.module.css";
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import { updateUserData } from "../../services/actions/updateUserData-action.js";
 import { errorSlice } from "../../services/reducers/error-slice.js";
 import { successSlice } from "../../services/reducers/success-slice.js";
 import { loginAuthSlice } from "../../services/reducers/login-auth-slice.js";
+import { useFormAndValidationProfile } from "../../hooks/useFormAndValidationProfile.js";
 
 export function ProfileComponent() {
   const dispatch = useDispatch();
-
-  // Объявление стейтов для значения инпутов
-  const [nameValue, setNameValue] = useState("");
-  const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
-
-  // Объявление рефов инпутов
-  const nameRef = useRef(null);
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+  const { values, handleChange, errors, isValid, setValues, resetForm } =
+    useFormAndValidationProfile();
 
   // Достаем Юзера и статус запроса
   const { user, requestStatus } = useSelector(state => state.loginAuthReducer);
@@ -27,13 +20,16 @@ export function ProfileComponent() {
 
   // При загрузки и изменении name или email ставим новые значения
   useEffect(() => {
-    setNameValue(name);
-    setEmailValue(email);
-    setPasswordValue("");
-  }, [email, name]);
+    setValues({
+      name: name,
+      email: email,
+      password: "",
+    });
+  }, [email, name, setValues]);
 
   // Достаем статусы запроса
-  const { request, error, success } = requestStatus.updateUserData;
+  const { request, error, errorMessage, success } =
+    requestStatus.updateUserData;
   const { showError, hideError } = errorSlice.actions;
   const { showSuccess, hideSuccess } = successSlice.actions;
   const { resetUpdateUserDataRequestStatus } = loginAuthSlice.actions;
@@ -48,11 +44,21 @@ export function ProfileComponent() {
       }, 3500);
     }
     if (error) {
-      dispatch(
-        showError(
-          "При попытке обновлении данных пользователя произошла ошибка. Проверьте введенные данные и попробуйте еще раз. Возможно почта введена в неверном формате, попробуйте изменить ее.",
-        ),
-      );
+      switch (errorMessage) {
+        case "User with such email already exists":
+          dispatch(
+            showError(
+              "Пользователь с такой почтой уже существует. Выберите другую почту и попробуйте еще раз.",
+            ),
+          );
+          break;
+        default:
+          dispatch(
+            showError(
+              "При попытке обновлении данных пользователя произошла ошибка. Проверьте введенные данные и попробуйте еще раз. Возможно почта введена в неверном формате, попробуйте изменить ее.",
+            ),
+          );
+      }
       setTimeout(() => {
         dispatch(hideError());
       }, 13000);
@@ -65,42 +71,21 @@ export function ProfileComponent() {
     success,
     showSuccess,
     hideSuccess,
+    resetUpdateUserDataRequestStatus,
+    errorMessage,
   ]);
 
   // При изменении полей, показываем
   const areButtonsVisible = useMemo(() => {
     if (
-      nameValue !== name ||
-      emailValue !== email ||
-      passwordValue.length >= 1
+      values.name !== name ||
+      values.email !== email ||
+      values.password.length >= 1
     ) {
       return true;
     }
     return false;
-  }, [nameValue, emailValue, passwordValue, name, email]);
-
-  // Стейт валидации
-  const [validationEnabled, setValidationEnabled] = useState({
-    nameInput: false,
-    emailInput: false,
-    passwordInput: false,
-  });
-
-  // Включаем валидацию на инпуте
-  function enableValidation(input) {
-    setValidationEnabled({
-      ...validationEnabled,
-      [input]: true,
-    });
-  }
-
-  // Выключаем валидацию на инпуте
-  function disableValidation(input) {
-    setValidationEnabled({
-      ...validationEnabled,
-      [input]: false,
-    });
-  }
+  }, [values, name, email]);
 
   // Логика переключения видимости или невидимости пароля
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -119,199 +104,87 @@ export function ProfileComponent() {
     return isPasswordVisible ? "text" : "password";
   }, [isPasswordVisible]);
 
-  // Функция обработчик изменений на инпуте с именем
-  function handleNameChange(e) {
-    if (!validationEnabled.nameInput && e.target.value.length >= 1) {
-      enableValidation("nameInput");
-    }
-    setNameValue(e.target.value);
-  }
-
-  // Функция обработчик изменений на инпуте с почтой/логином
-  function handleEmailChange(e) {
-    if (!validationEnabled.emailInput && e.target.value.length >= 1) {
-      enableValidation("emailInput");
-    }
-    setEmailValue(e.target.value);
-  }
-
-  // Функция обработчик изменений на инпуте с паролем
-  function handlePasswordChange(e) {
-    if (!validationEnabled.passwordInput && e.target.value.length >= 1) {
-      enableValidation("passwordInput");
-    }
-    if (e.target.value.length === 0) {
-      disableValidation("passwordInput");
-    }
-    setPasswordValue(e.target.value);
-  }
-
-  // Если имя некорректное, выводим ошибку
-  const isNameWrong = useMemo(() => {
-    if (validationEnabled.nameInput && !nameRef?.current?.validity?.valid) {
-      return true;
-    }
-    if (validationEnabled.nameInput && nameValue === "") {
-      return true;
-    }
-    return false;
-  }, [
-    validationEnabled.nameInput,
-    nameValue,
-    nameRef?.current?.validity?.valid,
-  ]);
-
-  // Если почта некорректная, выводим ошибку
-  const isEmailWrong = useMemo(() => {
-    if (validationEnabled.emailInput && !emailRef?.current?.validity?.valid) {
-      return true;
-    }
-    if (validationEnabled.emailInput && emailValue === "") {
-      return true;
-    }
-    return false;
-  }, [
-    validationEnabled.emailInput,
-    emailValue,
-    emailRef?.current?.validity?.valid,
-  ]);
-
-  // Если пароль некорректный, выводим ошибку
-  const isPasswordWrong = useMemo(() => {
-    if (
-      validationEnabled.passwordInput &&
-      !passwordRef?.current?.validity?.valid
-    ) {
-      return true;
-    }
-    if (validationEnabled.passwordInput && passwordValue === "") {
-      return true;
-    }
-    return false;
-  }, [
-    validationEnabled.passwordInput,
-    passwordValue,
-    passwordRef?.current?.validity?.valid,
-  ]);
-
-  // Если поля формы невалидны, вылючаем сабмит
-  const isSubmitButtonDisabled = useMemo(() => {
-    if (
-      !validationEnabled.nameInput &&
-      !validationEnabled.emailInput &&
-      !validationEnabled.passwordInput
-    ) {
-      return true;
-    }
-    if (!nameValue || !emailValue) {
-      return true;
-    }
-    if (!isNameWrong && !isEmailWrong && !isPasswordWrong) {
-      return false;
-    }
-    return true;
-  }, [
-    validationEnabled.nameInput,
-    validationEnabled.emailInput,
-    validationEnabled.passwordInput,
-    isNameWrong,
-    isEmailWrong,
-    isPasswordWrong,
-    passwordValue,
-    nameValue,
-    emailValue,
-  ]);
-
   // Обработка сабмита
   function handleSubmit(e) {
     e.preventDefault();
     dispatch(
       updateUserData({
-        name: nameValue,
-        email: emailValue,
-        password: passwordValue,
+        name: values.name,
+        email: values.email,
+        password: values.password,
       }),
     );
-    setPasswordValue("");
-    setValidationEnabled({
-      nameInput: false,
-      emailInput: false,
-      passwordInput: false,
-    });
-  }
-
-  // Обработка ресета
-  function handleReset(e) {
-    e.preventDefault();
-    setNameValue(name);
-    setEmailValue(email);
-    setPasswordValue("");
-
-    setValidationEnabled({
-      nameInput: false,
-      emailInput: false,
-      passwordInput: false,
+    setValues({
+      ...values,
+      password: "",
     });
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      onReset={handleReset}
+      onReset={() => {
+        resetForm({ name, email, password: "" });
+      }}
       className={`mt-30 ${styles.formBox}`}
       noValidate
     >
-      <Input
-        type={"text"}
-        placeholder={"Имя"}
-        onChange={handleNameChange}
-        icon={"EditIcon"}
-        value={nameValue}
-        name={"name"}
-        error={isNameWrong}
-        ref={nameRef}
-        minLength={2}
-        maxLength={50}
-        disabled={request}
-        errorText={"Некорректное имя. Мин длина 2 символа."}
-        size={"default"}
-        extraClass="ml-1"
-      />
-      <Input
-        type={"email"}
-        placeholder={"Логин"}
-        onChange={handleEmailChange}
-        icon={"EditIcon"}
-        value={emailValue}
-        name={"email"}
-        error={isEmailWrong}
-        ref={emailRef}
-        disabled={request}
-        errorText={"Некорректный формат Email."}
-        size={"default"}
-        extraClass="ml-1"
-      />
-      <Input
-        type={passwordType}
-        placeholder={"Пароль"}
-        onChange={handlePasswordChange}
-        icon={validationEnabled.passwordInput ? passwordIcon : "EditIcon"}
-        onIconClick={validationEnabled.passwordInput ? onIconClick : null}
-        value={passwordValue}
-        name={"password"}
-        error={isPasswordWrong}
-        ref={passwordRef}
-        disabled={request}
-        minLength={8}
-        pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
-        errorText={"Придумайте более надежный пароль. Мин 1 цифра."}
-        size={"default"}
-        extraClass="ml-1"
-      />
+      <div className={styles.inputWrapper}>
+        <Input
+          type={"text"}
+          placeholder={"Имя"}
+          onChange={handleChange}
+          icon={"EditIcon"}
+          value={values.name || ""}
+          name={"name"}
+          error={!!errors.name}
+          minLength={2}
+          maxLength={50}
+          disabled={request}
+          errorText={errors.name}
+          size={"default"}
+          extraClass="ml-1"
+          required
+        />
+      </div>
+      <div className={styles.inputWrapper}>
+        <Input
+          type={"email"}
+          placeholder={"Логин"}
+          onChange={handleChange}
+          icon={"EditIcon"}
+          value={values.email || ""}
+          name={"email"}
+          error={!!errors.email}
+          disabled={request}
+          errorText={errors.email}
+          size={"default"}
+          extraClass="ml-1"
+          required
+        />
+      </div>
+      <div className={styles.inputWrapper}>
+        <Input
+          type={passwordType}
+          placeholder={"Пароль"}
+          onChange={handleChange}
+          icon={passwordIcon}
+          onIconClick={onIconClick}
+          value={values.password || ""}
+          name={"password"}
+          error={!!errors.password}
+          disabled={request}
+          minLength={8}
+          pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+          errorText={"Минимум 8 симолов. Мининмум 1 цифра в пароле."}
+          size={"default"}
+          extraClass="ml-1"
+        />
+      </div>
       {areButtonsVisible && (
         <div className={styles.buttonsWrapper}>
           <Button
-            disabled={request || isSubmitButtonDisabled}
+            disabled={request || !isValid}
             htmlType="submit"
             type="primary"
             size="medium"

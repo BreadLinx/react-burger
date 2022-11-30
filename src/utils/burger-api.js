@@ -22,13 +22,12 @@ async function checkResponse(res) {
 
 async function fetchWithRefresh(url, options) {
   try {
-    const res = await fetch(url, options);
-    return await checkResponse(res);
+    return await request(url, options);
   } catch (error) {
     if (error.message === "jwt expired") {
       const refreshData = await sendRefreshRequest();
       if (!refreshData.success) {
-        Promise.reject(refreshData);
+        return Promise.reject(refreshData);
       }
       const authToken = refreshData.authToken.split("Bearer ")[1];
       setCookie("authToken", authToken);
@@ -36,64 +35,67 @@ async function fetchWithRefresh(url, options) {
 
       options.headers.authorization = refreshData.authToken;
 
-      const res = await fetch(url, options);
-      return await checkResponse(res);
+      return await request(url, options);
     } else {
-      Promise.reject(error);
+      return Promise.reject(error);
     }
   }
 }
 
+function request(url, options) {
+  return fetch(url, options).then(checkResponse);
+}
+
 function sendRefreshRequest() {
-  return fetch(REFRESH_URL, {
+  return request(REFRESH_URL, {
     headers,
     method: "POST",
     body: JSON.stringify({
       token: getCookie("refreshToken"),
     }),
-  }).then(checkResponse);
+  });
 }
 
 export function getIngredients() {
-  return fetch(INGREDIENTS_URL, {
+  return request(INGREDIENTS_URL, {
     headers: headers,
     method: "GET",
-  }).then(checkResponse);
+  });
 }
 
 export function sendOrderRequest(idArray) {
-  return fetch(ORDERS_URL, {
+  return request(ORDERS_URL, {
     headers,
     method: "POST",
     body: JSON.stringify({
       ingredients: idArray,
     }),
-  }).then(checkResponse);
+  });
 }
 
 export function sendForgotPasswordRequest(email) {
-  return fetch(PASSWORD_FORGOT_URL, {
+  return request(PASSWORD_FORGOT_URL, {
     headers,
     method: "POST",
     body: JSON.stringify({
       email: email,
     }),
-  }).then(checkResponse);
+  });
 }
 
 export function sendResetPasswordRequest({ password, code }) {
-  return fetch(PASSWORD_RESET_URL, {
+  return request(PASSWORD_RESET_URL, {
     headers,
     method: "POST",
     body: JSON.stringify({
       password: password,
       token: code,
     }),
-  }).then(checkResponse);
+  });
 }
 
-export function sendRegistrationRequest(name, email, password) {
-  return fetch(REGISTRATION_URL, {
+export function sendRegistrationRequest({ name, email, password }) {
+  return request(REGISTRATION_URL, {
     headers,
     method: "POST",
     body: JSON.stringify({
@@ -101,28 +103,28 @@ export function sendRegistrationRequest(name, email, password) {
       email: email,
       password: password,
     }),
-  }).then(checkResponse);
+  });
 }
 
-export function sendLoginRequest(email, password) {
-  return fetch(LOGIN_URL, {
+export function sendLoginRequest({ email, password }) {
+  return request(LOGIN_URL, {
     headers,
     method: "POST",
     body: JSON.stringify({
       email: email,
       password: password,
     }),
-  }).then(checkResponse);
+  });
 }
 
 export function sendLogoutRequest() {
-  return fetch(LOGOUT_URL, {
+  return request(LOGOUT_URL, {
     headers,
     method: "POST",
     body: JSON.stringify({
       token: getCookie("refreshToken"),
     }),
-  }).then(checkResponse);
+  });
 }
 
 export function getUserDataRequest() {

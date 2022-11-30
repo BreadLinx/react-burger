@@ -3,7 +3,7 @@ import {
   Input,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { sendResetPassword } from "../../services/actions/sendResetPassword-action.js";
@@ -11,11 +11,14 @@ import { errorSlice } from "../../services/reducers/error-slice.js";
 import { successSlice } from "../../services/reducers/success-slice.js";
 import { forgotPasswordSlice } from "../../services/reducers/forgot-password-slice.js";
 import { sendForgotPassword } from "../../services/actions/sendForgotPassword-action.js";
+import { useFormAndValidation } from "../../hooks/useFormAndValidation.js";
 
 export function ResetPasswordComponent() {
   const dispatch = useDispatch();
   const history = useHistory();
   const { state } = useLocation();
+  const { values, handleChange, errors, isValid, setValues } =
+    useFormAndValidation();
 
   const { request, success, error, errorMessage } = useSelector(
     state => state.forgotPasswordReducer.requestStatus.resetPassword,
@@ -29,50 +32,20 @@ export function ResetPasswordComponent() {
   const { showError, hideError } = errorSlice.actions;
   const { showSuccess, hideSuccess } = successSlice.actions;
 
-  // input
-  const [passwordValue, setPasswordValue] = useState("");
-  const [codeValue, setCodeValue] = useState("");
-
-  const passwopdInputRef = useRef(null);
-  const codeInputRef = useRef(null);
-
-  function handlePasswordInputChange(e) {
-    if (!validationEnabled.passwordInput && e.target.value.length >= 1) {
-      enableValidation("passwordInput");
-    }
-    setPasswordValue(e.target.value);
-  }
-
-  function handleCodeInputChange(e) {
-    if (!validationEnabled.codeInput && e.target.value.length >= 1) {
-      enableValidation("codeInput");
-    }
-    setCodeValue(e.target.value);
-  }
-
-  // validation
-  const [validationEnabled, setValidationEnabled] = useState({
-    passwordInput: false,
-    codeInput: false,
-  });
-
-  function enableValidation(input) {
-    setValidationEnabled({
-      ...validationEnabled,
-      [input]: true,
-    });
-  }
-
   // onSubmit
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(sendResetPassword({ password: passwordValue, code: codeValue }));
+    dispatch(
+      sendResetPassword({ password: values.password, code: values.code }),
+    );
   }
 
   useEffect(() => {
     if (success) {
-      setPasswordValue("");
-      setCodeValue("");
+      setValues({
+        password: "",
+        code: "",
+      });
       history.replace({ pathname: "/login" });
       dispatch(resetStatuses());
     }
@@ -94,7 +67,7 @@ export function ResetPasswordComponent() {
       }
       setTimeout(() => {
         dispatch(hideError());
-      }, 10000);
+      }, 7000);
     }
   }, [
     success,
@@ -105,6 +78,7 @@ export function ResetPasswordComponent() {
     errorMessage,
     history,
     resetStatuses,
+    setValues,
   ]);
 
   useEffect(() => {
@@ -144,63 +118,6 @@ export function ResetPasswordComponent() {
     setIsPasswordVisible(!isPasswordVisible);
   }
 
-  // show input error in password input
-  const isPasswordWrong = useMemo(() => {
-    if (
-      validationEnabled.passwordInput &&
-      !passwopdInputRef?.current?.validity?.valid
-    ) {
-      return true;
-    }
-    if (validationEnabled.passwordInput && passwordValue === "") {
-      return true;
-    }
-    return false;
-  }, [
-    validationEnabled.passwordInput,
-    passwordValue,
-    passwopdInputRef?.current?.validity?.valid,
-  ]);
-
-  // show input error in code input
-  const isCodeWrong = useMemo(() => {
-    if (
-      validationEnabled.codeInput &&
-      !codeInputRef?.current?.validity?.valid
-    ) {
-      return true;
-    }
-    if (validationEnabled.codeInput && codeValue === "") {
-      return true;
-    }
-    return false;
-  }, [
-    validationEnabled.codeInput,
-    codeValue,
-    codeInputRef?.current?.validity?.valid,
-  ]);
-
-  // toggle button when there is a wrong meaning in an input
-  const isSubmitButtonDisabled = useMemo(() => {
-    if (!validationEnabled.passwordInput && !validationEnabled.codeInput) {
-      return true;
-    }
-    if (!passwordValue || !codeValue) {
-      return true;
-    }
-    if (!isPasswordWrong && !isCodeWrong) {
-      return false;
-    }
-    return true;
-  }, [
-    validationEnabled.passwordInput,
-    validationEnabled.codeInput,
-    isPasswordWrong,
-    isCodeWrong,
-    passwordValue,
-    codeValue,
-  ]);
-
   const [isCodeButtonDisabled, setIsCodeButtonDisabled] = useState(false);
   function handleRequestCodeAgain() {
     dispatch(sendForgotPassword(state.email));
@@ -215,37 +132,40 @@ export function ResetPasswordComponent() {
       <div className={`${styles.loginBox}`}>
         <h1 className={`text text_type_main-medium`}>Восстановление пароля</h1>
         <form className={`${styles.form}`} noValidate onSubmit={handleSubmit}>
-          <Input
-            type={isPasswordVisible ? "password" : "text"}
-            icon={isPasswordVisible ? "HideIcon" : "ShowIcon"}
-            error={isPasswordWrong}
-            onChange={handlePasswordInputChange}
-            onIconClick={onIconClick}
-            value={passwordValue}
-            ref={passwopdInputRef}
-            placeholder={"Введите новый пароль"}
-            name={"new-password"}
-            errorText={"Придумайте более надежный пароль. Мин 1 цифра."}
-            pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
-            disabled={request}
-            size={"default"}
-          />
-          <Input
-            error={isCodeWrong}
-            onChange={handleCodeInputChange}
-            value={codeValue}
-            ref={codeInputRef}
-            type={"text"}
-            placeholder={"Введите код из письма"}
-            name={"code"}
-            errorText={"Неверный код."}
-            minLength={6}
-            maxLength={40}
-            disabled={request}
-            size={"default"}
-          />
+          <div className={styles.inputWrapper}>
+            <Input
+              type={isPasswordVisible ? "password" : "text"}
+              icon={isPasswordVisible ? "HideIcon" : "ShowIcon"}
+              error={!!errors.password}
+              onChange={handleChange}
+              onIconClick={onIconClick}
+              value={values.password || ""}
+              placeholder={"Введите новый пароль"}
+              name={"password"}
+              errorText={"Минимум 8 симолов. Мининмум 1 цифра в пароле."}
+              pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+              disabled={request}
+              size={"default"}
+            />
+          </div>
+          <div className={styles.inputWrapper}>
+            <Input
+              error={errors.code}
+              onChange={handleChange}
+              value={values.code || ""}
+              type={"text"}
+              placeholder={"Введите код из письма"}
+              name={"code"}
+              errorText={errors.code}
+              required
+              minLength={6}
+              maxLength={40}
+              disabled={request}
+              size={"default"}
+            />
+          </div>
           <Button
-            disabled={isSubmitButtonDisabled || request}
+            disabled={!isValid || request}
             htmlType="submit"
             type="primary"
             size="medium"

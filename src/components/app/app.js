@@ -1,22 +1,22 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useLocation, useHistory } from "react-router-dom";
-import { getIngridients } from "./services/actions/getIngridients-action.js";
-import { MainPage } from "./pages/main-page.js";
-import { LoginPage } from "./pages/login-page.js";
-import { RegisterPage } from "./pages/register-page.js";
-import { ForgotPasswordPage } from "./pages/forgot-password-page.js";
-import { ResetPasswordPage } from "./pages/reset-password-page.js";
-import { ProfilePage } from "./pages/profile-page.js";
-import { IngredientPage } from "./pages/ingredient-page.js";
-import { NotFound404 } from "./pages/not-found-404.js";
-import { getUserData } from "./services/actions/getUserData-action.js";
-import { getCookie } from "./utils/cookies.js";
-import { ProtectedRoute } from "./components/protected-route/protected-route.js";
-import { loginAuthSlice } from "./services/reducers/login-auth-slice.js";
-import { Modal } from "./components/modal/modal.js";
-import { IngredientDetails } from "./components/ingredient-details/ingredient-details.js";
-import { errorSlice } from "./services/reducers/error-slice.js";
+import { getIngridients } from "../../services/actions/getIngridients-action.js";
+import { MainPage } from "../../pages/main-page.js";
+import { LoginPage } from "../../pages/login-page.js";
+import { RegisterPage } from "../../pages/register-page.js";
+import { ForgotPasswordPage } from "../../pages/forgot-password-page.js";
+import { ResetPasswordPage } from "../../pages/reset-password-page.js";
+import { ProfilePage } from "../../pages/profile-page.js";
+import { IngredientPage } from "../../pages/ingredient-page.js";
+import { NotFound404 } from "../../pages/not-found-404.js";
+import { getUserData } from "../../services/actions/getUserData-action.js";
+import { getCookie } from "../../utils/cookies.js";
+import { ProtectedRoute } from "../../components/protected-route/protected-route.js";
+import { loginAuthSlice } from "../../services/reducers/login-auth-slice.js";
+import { Modal } from "../modal/modal.js";
+import { IngredientDetails } from "../ingredient-details/ingredient-details.js";
+import { errorSlice } from "../../services/reducers/error-slice.js";
 
 export function App() {
   const dispatch = useDispatch();

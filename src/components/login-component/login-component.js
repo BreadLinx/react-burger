@@ -3,16 +3,19 @@ import {
   Input,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { sendLogin } from "../../services/actions/sendLogin-action";
 import { errorSlice } from "../../services/reducers/error-slice.js";
+import { useFormAndValidation } from "../../hooks/useFormAndValidation.js";
 
 export function LoginComponent() {
   // Объявляем констунты
   const dispatch = useDispatch();
   const history = useHistory();
+  const { values, handleChange, errors, isValid, setValues } =
+    useFormAndValidation();
 
   // Достаем статусы запроса
   const { request, error, errorMessage, success } = useSelector(
@@ -22,49 +25,13 @@ export function LoginComponent() {
   // Достаем экшны для показа ошибок
   const { showError, hideError } = errorSlice.actions;
 
-  // Создаем стейты для инпутов
-  const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
-
-  // Создаем рефы для инпутов
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-
-  // Объект валидации
-  const [validationEnabled, setValidationEnabled] = useState({
-    emailInput: false,
-    passwordInput: false,
-  });
-
-  // Включаем валидацию
-  function enableValidation(input) {
-    setValidationEnabled({
-      ...validationEnabled,
-      [input]: true,
-    });
-  }
-
-  // Обрабатываем изменения на инпуте почты/логина
-  function handleEmailChange(e) {
-    if (!validationEnabled.nameInput && e.target.value.length >= 1) {
-      enableValidation("emailInput");
-    }
-    setEmailValue(e.target.value);
-  }
-
-  // Обрабатываем изменения на инпуте пароля
-  function handlePasswordChange(e) {
-    if (!validationEnabled.passwordInput && e.target.value.length >= 1) {
-      enableValidation("passwordInput");
-    }
-    setPasswordValue(e.target.value);
-  }
-
   // Переадресовываем в случае успеха логина или показываем ошибку
   useEffect(() => {
     if (success) {
-      setEmailValue("");
-      setPasswordValue("");
+      setValues({
+        email: "",
+        password: "",
+      });
       history.replace({ pathname: "/" });
     }
     if (error) {
@@ -87,60 +54,15 @@ export function LoginComponent() {
         dispatch(hideError());
       }, 12000);
     }
-  }, [error, success, history, dispatch, showError, hideError, errorMessage]);
-
-  // Показываем ошибку если инпут почты невалидный
-  const isEmailWrong = useMemo(() => {
-    if (validationEnabled.emailInput && !emailRef?.current?.validity?.valid) {
-      return true;
-    }
-    if (validationEnabled.emailInput && emailValue === "") {
-      return true;
-    }
-    return false;
   }, [
-    validationEnabled.emailInput,
-    emailValue,
-    emailRef?.current?.validity?.valid,
-  ]);
-
-  // Показываем ошибку если инпут пароля невалидный
-  const isPasswordWrong = useMemo(() => {
-    if (
-      validationEnabled.passwordInput &&
-      !passwordRef?.current?.validity?.valid
-    ) {
-      return true;
-    }
-    if (validationEnabled.passwordInput && passwordValue === "") {
-      return true;
-    }
-    return false;
-  }, [
-    validationEnabled.passwordInput,
-    passwordValue,
-    passwordRef?.current?.validity?.valid,
-  ]);
-
-  // Выключаем кнопку если какой то инпут невалидный
-  const isSubmitButtonDisabled = useMemo(() => {
-    if (!validationEnabled.emailInput && !validationEnabled.passwordInput) {
-      return true;
-    }
-    if (!emailValue || !passwordValue) {
-      return true;
-    }
-    if (!isEmailWrong && !isPasswordWrong) {
-      return false;
-    }
-    return true;
-  }, [
-    validationEnabled.emailInput,
-    validationEnabled.passwordInput,
-    isEmailWrong,
-    isPasswordWrong,
-    emailValue,
-    passwordValue,
+    error,
+    success,
+    history,
+    dispatch,
+    showError,
+    hideError,
+    errorMessage,
+    setValues,
   ]);
 
   // Логика переключения видимости пароля
@@ -152,7 +74,7 @@ export function LoginComponent() {
   // Обрабатываем сабмит
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(sendLogin({ emailValue, passwordValue }));
+    dispatch(sendLogin({ email: values.email, password: values.password }));
   }
 
   return (
@@ -160,35 +82,39 @@ export function LoginComponent() {
       <div className={`${styles.loginBox}`}>
         <h1 className={`text text_type_main-medium`}>Вход</h1>
         <form onSubmit={handleSubmit} className={`${styles.form}`} noValidate>
-          <Input
-            type={"email"}
-            placeholder={"E-mail"}
-            onChange={handleEmailChange}
-            value={emailValue}
-            name={"name"}
-            error={isEmailWrong}
-            ref={emailRef}
-            errorText={"Некорректный формат Email."}
-            disabled={request}
-            size={"default"}
-          />
-          <Input
-            type={isPasswordVisible ? "password" : "text"}
-            icon={isPasswordVisible ? "HideIcon" : "ShowIcon"}
-            onIconClick={onIconClick}
-            placeholder={"Пароль"}
-            onChange={handlePasswordChange}
-            value={passwordValue}
-            ref={passwordRef}
-            name={"password"}
-            error={isPasswordWrong}
-            errorText={"Неверный формат пароля."}
-            minLength={8}
-            disabled={request}
-            size={"default"}
-          />
+          <div className={styles.inputWrapper}>
+            <Input
+              type={"email"}
+              placeholder={"E-mail"}
+              onChange={handleChange}
+              value={values.email || ""}
+              name={"email"}
+              error={!!errors.email}
+              errorText={errors.email}
+              disabled={request}
+              required
+              size={"default"}
+            />
+          </div>
+          <div className={styles.inputWrapper}>
+            <Input
+              type={isPasswordVisible ? "password" : "text"}
+              icon={isPasswordVisible ? "HideIcon" : "ShowIcon"}
+              onIconClick={onIconClick}
+              placeholder={"Пароль"}
+              onChange={handleChange}
+              value={values.password || ""}
+              name={"password"}
+              error={!!errors.password}
+              errorText={errors.password}
+              minLength={8}
+              disabled={request}
+              required
+              size={"default"}
+            />
+          </div>
           <Button
-            disabled={isSubmitButtonDisabled || request}
+            disabled={!isValid || request}
             htmlType="submit"
             type="primary"
             size="medium"
