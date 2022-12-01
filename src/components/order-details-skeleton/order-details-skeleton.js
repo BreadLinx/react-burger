@@ -1,7 +1,7 @@
-import orderDetailsSkeletonStyles from './order-skeleton.module.css';
+import styles from './order-skeleton.module.css';
 
 export function OrderDetailsSkeleton() {
     return (
-        <div className={`${orderDetailsSkeletonStyles.skeleton}`} style={{animationName: orderDetailsSkeletonStyles.flashingSkeleton}}></div>
+        <div className={`${styles.skeleton}`} style={{animationName: styles.flashingSkeleton}}></div>
     );
 }

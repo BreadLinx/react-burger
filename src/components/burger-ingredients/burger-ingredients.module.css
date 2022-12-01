@@ -1,14 +1,13 @@
 .section {
-    width: 600px;
+  width: 600px;
 }
 
 .ingredientsChooseWrapper {
-    overflow-y: scroll;
-    max-height: 756px;
-    padding-left: 0;
-    margin: 0;
-    display: flex;
-    flex-flow: column nowrap;
-    max-height: calc(100vh - 244px);
-    overflow-y: scroll;
+  overflow-y: scroll;
+  max-height: 756px;
+  padding-left: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  max-height: calc(100vh - 244px);
 }

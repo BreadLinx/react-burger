@@ -1,0 +1,35 @@
+.box {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 80px;
+}
+
+.linkBox {
+  padding-top: 18px;
+  padding-bottom: 18px;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 36px;
+}
+
+.link {
+  text-decoration: none;
+}
+
+
+.button {
+  text-decoration: none;
+  border: 0;
+  background-color: initial;
+  text-align: left;
+  cursor: pointer;
+}
+
+.activeLink {
+  color: #fff;
+}
+
+.infoText {
+  max-width: 320px;
+  opacity: .4;
+}

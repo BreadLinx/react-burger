@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import PropTypes from 'prop-types';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
-import tabWrapperStyles from './tab-wrapper.module.css';
+import styles from './tab-wrapper.module.css';
 
 export function TabWrapper({inViewBuns, inViewSauces, inViewMains}) {
 
@@ -25,7 +25,7 @@ export function TabWrapper({inViewBuns, inViewSauces, inViewMains}) {
     }, [inViewBuns, inViewSauces, inViewMains]);
 
     return (
-        <div className={`mt-5 ${tabWrapperStyles.box}`}>
+        <div className={`mt-5 ${styles.box}`}>
           <Tab value="buns" active={currentTab === 'buns'} onClick={setCurrentTabOnClick}>
             Булки
           </Tab>

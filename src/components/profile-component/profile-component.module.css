@@ -1,0 +1,16 @@
+.formBox {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 24px;
+}
+
+.buttonsWrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 30px;
+}
+
+.inputWrapper p {
+  margin-bottom: 0;
+  max-width: 456px;
+}

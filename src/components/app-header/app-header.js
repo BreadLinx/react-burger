@@ -1,14 +1,44 @@
-import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import appHeaderStyles from './app-header.module.css';
- 
-export function AppHeader() {
-    return (
-        <header className={appHeaderStyles.header}>
-            <a href='#' className={`p-5 ${appHeaderStyles.button} ${appHeaderStyles.button_active}`}><BurgerIcon type="primary" /><p className='text text_type_main-default'>Конструктор</p></a>
-            <a href='#' className={`p-5 ${appHeaderStyles.button}`}><ListIcon type="secondary" /><p className='text text_type_main-default'>Лента заказов</p></a>
-            <Logo />
-            <a href='#' className={`p-5 ${appHeaderStyles.button}`}><ProfileIcon type="secondary" /><p className='text text_type_main-default'>Личный кабинет</p></a>
-        </header>
-    );
-}
+import {
+  Logo,
+  BurgerIcon,
+  ListIcon,
+  ProfileIcon,
+} from "@ya.praktikum/react-developer-burger-ui-components";
+import styles from "./app-header.module.css";
+import { Link, useRouteMatch } from "react-router-dom";
 
+export function AppHeader() {
+  const { url } = useRouteMatch();
+
+  return (
+    <header className={styles.header}>
+      <Link
+        to="/"
+        className={`p-5 ${styles.button} ${
+          url.endsWith("/") ? styles.button_active : ""
+        }`}
+      >
+        <BurgerIcon type={url.endsWith("/") ? "primary" : "secondary"} />
+        <p className="text text_type_main-default">Конструктор</p>
+      </Link>
+      <Link to="/" className={`p-5 ${styles.button}`}>
+        <ListIcon type="secondary" />
+        <p className="text text_type_main-default">Лента заказов</p>
+      </Link>
+      <Link to="/" className={styles.logoWrapper}>
+        <Logo />
+      </Link>
+      <Link
+        to="/profile"
+        className={`p-5 ${styles.button} ${
+          url.endsWith("/profile") ? styles.button_active : ""
+        }`}
+      >
+        <ProfileIcon
+          type={url.endsWith("/profile") ? "primary" : "secondary"}
+        />
+        <p className="text text_type_main-default">Личный кабинет</p>
+      </Link>
+    </header>
+  );
+}

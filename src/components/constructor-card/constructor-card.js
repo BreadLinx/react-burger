@@ -1,4 +1,4 @@
-import constructorCardStyles from './constructor-card.module.css';
+import styles from './constructor-card.module.css';
 import { DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components'
 import { useDrag, useDrop } from 'react-dnd';
 import {useEffect, useRef} from 'react';
@@ -61,11 +61,11 @@ export function ConstructorCard({card, index}) {
     dropRef(preview(ref));
 
     return (
-        <li ref={ref} className={`${constructorCardStyles.fillingBoxItem}`}>
-            <div ref={dragRef} className={constructorCardStyles.dragIconWrapper}>
+        <li ref={ref} className={`${styles.fillingBoxItem}`}>
+            <div ref={dragRef} className={styles.dragIconWrapper}>
               <DragIcon type="primary" />
             </div>
-            <div className={`${constructorCardStyles.itemWrapper} ${dragStatus && card.isDragging && constructorCardStyles.itemWrapperOnDragging} ${dragStatus && !card.isDragging && constructorCardStyles.itemWrapperOnCanDrop}`} >
+            <div className={`${styles.itemWrapper} ${dragStatus && card.isDragging && styles.itemWrapperOnDragging} ${dragStatus && !card.isDragging && styles.itemWrapperOnCanDrop}`} >
                 <ConstructorElement  handleClose={() => {handleIngredientDelete(index)}} text={card.name} price={card.price} thumbnail={card.image}/>
             </div>
         </li>
