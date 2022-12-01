@@ -25,7 +25,9 @@ export function AppHeader() {
         <ListIcon type="secondary" />
         <p className="text text_type_main-default">Лента заказов</p>
       </Link>
-      <Logo />
+      <Link to="/" className={styles.logoWrapper}>
+        <Logo />
+      </Link>
       <Link
         to="/profile"
         className={`p-5 ${styles.button} ${

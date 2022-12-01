@@ -48,6 +48,12 @@ export const burgerConstructorSlice = createSlice({
         item => ({ ...item, isDragging: false }),
       );
     },
+    resetBurgerConstructor: state => {
+      state.burgerStructure = {
+        bun: null,
+        ingredients: [],
+      };
+    },
   },
 });
 

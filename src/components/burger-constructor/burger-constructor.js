@@ -31,7 +31,8 @@ export function BurgerConstructor() {
     state => state.loginAuthReducer.user,
   );
 
-  const { addIngredient } = burgerConstructorSlice.actions;
+  const { addIngredient, resetBurgerConstructor } =
+    burgerConstructorSlice.actions;
   const { clearOrderData } = orderDetailsSlice.actions;
   const { showError, hideError } = errorSlice.actions;
 
@@ -99,6 +100,7 @@ export function BurgerConstructor() {
 
   function closePopup() {
     dispatch(clearOrderData());
+    dispatch(resetBurgerConstructor());
   }
 
   const counterValue = useMemo(() => {
