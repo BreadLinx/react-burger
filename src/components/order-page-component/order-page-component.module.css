@@ -1,0 +1,91 @@
+.box {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 88px);
+}
+
+.wrapper {
+  width: 640px;
+  box-sizing: border-box;
+  max-height: 620.15px;
+  overflow-y: auto;
+}
+
+.loaderWrapper {
+  width: 100%;
+  height: 620.15px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrapper::-webkit-scrollbar {
+  width: 0;
+}
+
+.compoundBox {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 24px;
+}
+
+.compoundList {
+  list-style: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 16px;
+  padding-right: 25px;
+}
+
+.totalBox {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.totalTextBox {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ingredientBox {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.textBox {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.ingredientTotal {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.orderDone {
+  color: #00cccc;
+}
+
+.numberText {
+  text-align: center;
+}

@@ -45,7 +45,7 @@ export function ProfilePageNav({ activeLink = "profile" }) {
           Профиль
         </Link>
         <Link
-          to="/"
+          to="/profile/orders"
           className={`text text_type_main-medium ${styles.link} ${
             activeLink === "history" ? styles.activeLink : "text_color_inactive"
           }`}

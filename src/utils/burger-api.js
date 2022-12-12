@@ -15,6 +15,10 @@ const REFRESH_URL = `${BASE_API_URL}/auth/token`;
 const LOGOUT_URL = `${BASE_API_URL}/auth/logout`;
 const USER_DATA_URL = `${BASE_API_URL}/auth/user`;
 
+const BASE_WEBSOCKET_URL = "wss://norma.nomoreparties.space";
+export const FEED_URL = `${BASE_WEBSOCKET_URL}/orders/all`;
+export const PERSONAL_FEED_URL = `${BASE_WEBSOCKET_URL}/orders`;
+
 async function checkResponse(res) {
   const response = await res.json();
   return response.success ? response : Promise.reject(response);

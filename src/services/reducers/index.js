@@ -5,6 +5,7 @@ import forgotPasswordReducer from "./forgot-password-slice.js";
 import loginAuthReducer from "./login-auth-slice.js";
 import errorReducer from "./error-slice.js";
 import successReducer from "./success-slice.js";
+import feedReducer from "./feed-slice.js";
 
 export const rootReducer = {
   burgerIngredientsReducer,
@@ -14,4 +15,5 @@ export const rootReducer = {
   loginAuthReducer,
   errorReducer,
   successReducer,
+  feedReducer,
 };
