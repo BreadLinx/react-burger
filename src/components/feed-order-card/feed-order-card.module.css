@@ -68,3 +68,7 @@
   z-index: 5;
   transform: translateX(-125%);
 }
+
+.orderDone {
+  color: #00cccc;
+}

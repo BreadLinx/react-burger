@@ -9,9 +9,8 @@ import {
 import { IngredientIconStyled } from "../ingredient-icon-styled/ingredient-icon-styled.js";
 import { Loader } from "../loader/loader";
 
-export function OrderFeedModal() {
+export function OrderFeedModal({ orders }) {
   const { id } = useParams();
-  const { orders } = useSelector(state => state.feedReducer);
   const { ingredients } = useSelector(state => state.burgerIngredientsReducer);
 
   const order = useMemo(() => {
@@ -75,7 +74,9 @@ export function OrderFeedModal() {
                 order.status === "done" ? styles.orderDone : ""
               }`}
             >
-              {order.status === "done" ? "Выполнен" : "Готовится"}
+              {order.status === "created" && "Создан"}
+              {order.status === "done" && "Выполнен"}
+              {order.status === "pending" && "В обработке"}
             </p>
           </div>
           <div className={`mb-10 ${styles.compoundBox}`}>

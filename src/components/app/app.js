@@ -85,6 +85,13 @@ export function App() {
     history.replace({ pathname: "/feed" });
   }
 
+  function closePersonalOrderPopup() {
+    history.replace({ pathname: "/profile/orders" });
+  }
+
+  const feedOrders = useSelector(state => state.feedReducer.orders);
+  const personalOrders = useSelector(state => state.userOrdersReducer.orders);
+
   return (
     <>
       <Switch location={background || location}>
@@ -103,7 +110,10 @@ export function App() {
         <Route path="/reset-password" exact>
           <ResetPasswordPage />
         </Route>
-        <ProtectedRoute path="/profile" exact>
+        <ProtectedRoute path="/profile/orders/:id" exact>
+          <OrderPage orders={personalOrders} />
+        </ProtectedRoute>
+        <ProtectedRoute path="/profile">
           <ProfilePage />
         </ProtectedRoute>
         <Route path="/ingredients/:id" exact>
@@ -113,7 +123,7 @@ export function App() {
           <FeedPage />
         </Route>
         <Route path="/feed/:id" exact>
-          <OrderPage />
+          <OrderPage orders={feedOrders} />
         </Route>
         <Route>
           <NotFound404 />
@@ -129,7 +139,14 @@ export function App() {
       {background && (
         <Route path="/feed/:id">
           <Modal closePopup={closeOrderFeedPopup}>
-            <OrderFeedModal />
+            <OrderFeedModal orders={feedOrders} />
+          </Modal>
+        </Route>
+      )}
+      {background && (
+        <Route path="/profile/orders/:id">
+          <Modal closePopup={closePersonalOrderPopup}>
+            <OrderFeedModal orders={personalOrders} />
           </Modal>
         </Route>
       )}

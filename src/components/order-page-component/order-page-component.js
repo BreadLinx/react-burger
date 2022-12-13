@@ -69,7 +69,9 @@ export function OrderPageComponent({ order }) {
                 order.status === "done" ? styles.orderDone : ""
               }`}
             >
-              {order.status === "done" ? "Выполнен" : "Готовится"}
+              {order.status === "created" && "Создан"}
+              {order.status === "done" && "Выполнен"}
+              {order.status === "pending" && "В обработке"}
             </p>
           </div>
           <div className={`mb-10 ${styles.compoundBox}`}>

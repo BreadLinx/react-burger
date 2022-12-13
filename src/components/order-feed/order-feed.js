@@ -1,10 +1,14 @@
 import styles from "./order-feed.module.css";
 import { FeedOrderCard } from "../feed-order-card/feed-order-card.js";
 import { useSelector } from "react-redux";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { FeedOrderCardSkeleton } from "../feed-order-card-skeleton/feed-order-card-skeleton.js";
+import { useLocation, useHistory } from "react-router-dom";
 
 export function OrderFeed() {
+  const history = useHistory();
+  const location = useLocation();
+
   const { orders, total, totalToday } = useSelector(state => state.feedReducer);
 
   const readyOrdersArray = useMemo(() => {
@@ -23,6 +27,16 @@ export function OrderFeed() {
     return arr.filter((item, index) => (index < 10 ? item : null));
   }, [orders]);
 
+  const handleClick = useCallback(
+    orderId => {
+      history.push({
+        pathname: `/feed/${orderId}`,
+        state: { background: location },
+      });
+    },
+    [history, location],
+  );
+
   return (
     <>
       <section className={styles.feedSection}>
@@ -40,7 +54,13 @@ export function OrderFeed() {
             </>
           ) : (
             orders.map(order => {
-              return <FeedOrderCard key={order._id} order={order} />;
+              return (
+                <FeedOrderCard
+                  key={order._id}
+                  order={order}
+                  handleClick={handleClick}
+                />
+              );
             })
           )}
         </ul>

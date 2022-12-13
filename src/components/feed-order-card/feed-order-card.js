@@ -2,14 +2,10 @@ import styles from "./feed-order-card.module.css";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router-dom";
 import { FormattedDate } from "@ya.praktikum/react-developer-burger-ui-components";
 import { IngredientIconStyled } from "../ingredient-icon-styled/ingredient-icon-styled.js";
 
-export function FeedOrderCard({ order }) {
-  const history = useHistory();
-  const location = useLocation();
-
+export function FeedOrderCard({ order, showStatus = false, handleClick }) {
   const { ingredients } = useSelector(state => state.burgerIngredientsReducer);
 
   const orderIngredients = useMemo(() => {
@@ -50,15 +46,8 @@ export function FeedOrderCard({ order }) {
     }, 0);
   }, [orderIngredients]);
 
-  function handleClick() {
-    history.push({
-      pathname: `/feed/${order._id}`,
-      state: { background: location },
-    });
-  }
-
   return (
-    <li onClick={handleClick} className={styles.wrapper}>
+    <li onClick={() => handleClick(order._id)} className={styles.wrapper}>
       <div className={styles.firstBox}>
         <p className="text text_type_digits-default">#{order.number}</p>
         <p className="text text_type_main-default text_color_inactive">
@@ -66,6 +55,17 @@ export function FeedOrderCard({ order }) {
         </p>
       </div>
       <p className="text text_type_main-medium">{order.name}</p>
+      {showStatus && (
+        <p
+          className={`text text_type_main-default ${
+            order.status === "done" ? styles.orderDone : ""
+          }`}
+        >
+          {order.status === "created" && "Создан"}
+          {order.status === "done" && "Выполнен"}
+          {order.status === "pending" && "В обработке"}
+        </p>
+      )}
       <div className={styles.secondBox}>
         <ul className={styles.ingredientsList}>
           {orderIngredients && orderIngredients.length <= 6

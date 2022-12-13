@@ -67,16 +67,6 @@ export function getIngredients() {
   });
 }
 
-export function sendOrderRequest(idArray) {
-  return request(ORDERS_URL, {
-    headers,
-    method: "POST",
-    body: JSON.stringify({
-      ingredients: idArray,
-    }),
-  });
-}
-
 export function sendForgotPasswordRequest(email) {
   return request(PASSWORD_FORGOT_URL, {
     headers,
@@ -152,6 +142,19 @@ export function updateUserDataRequest({ name, email, password }) {
       name: name,
       email: email,
       password: password,
+    }),
+  });
+}
+
+export function sendOrderRequest(idArray) {
+  return fetchWithRefresh(ORDERS_URL, {
+    headers: {
+      ...headers,
+      authorization: `Bearer ${getCookie("authToken")}`,
+    },
+    method: "POST",
+    body: JSON.stringify({
+      ingredients: idArray,
     }),
   });
 }
