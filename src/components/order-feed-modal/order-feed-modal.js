@@ -9,9 +9,15 @@ import {
 import { IngredientIconStyled } from "../ingredient-icon-styled/ingredient-icon-styled.js";
 import { Loader } from "../loader/loader";
 
-export function OrderFeedModal({ orders }) {
+export function OrderFeedModal() {
   const { id } = useParams();
   const { ingredients } = useSelector(state => state.burgerIngredientsReducer);
+
+  const { messages } = useSelector(state => state.webSocketReducer);
+  const { orders } =
+    messages.length !== 0
+      ? messages[messages.length - 1]
+      : { orders: [], total: 0, totalToday: 0 };
 
   const order = useMemo(() => {
     if (orders) {
@@ -110,9 +116,15 @@ export function OrderFeedModal({ orders }) {
             </ul>
           </div>
           <div className={styles.totalBox}>
-            <p className="text text_type_main-default text_color_inactive">
-              <FormattedDate date={new Date(order.createdAt)} />
-            </p>
+            {order.status === "created" || order.status === "pending" ? (
+              <p className="text text_type_main-default text_color_inactive">
+                Только что
+              </p>
+            ) : (
+              <p className="text text_type_main-default text_color_inactive">
+                <FormattedDate date={new Date(order.createdAt)} />
+              </p>
+            )}
             <p
               className={`text text_type_digits-default ${styles.totalTextBox}`}
             >

@@ -1,4 +1,5 @@
 import styles from "./ingredient-icon-styled.module.css";
+import { PropTypes } from "prop-types";
 
 export function IngredientIconStyled({ src, alt, remainder = 0 }) {
   return (
@@ -14,3 +15,9 @@ export function IngredientIconStyled({ src, alt, remainder = 0 }) {
     </div>
   );
 }
+
+IngredientIconStyled.propTypes = {
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  remainder: PropTypes.number,
+};

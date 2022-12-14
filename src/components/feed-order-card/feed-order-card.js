@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { FormattedDate } from "@ya.praktikum/react-developer-burger-ui-components";
 import { IngredientIconStyled } from "../ingredient-icon-styled/ingredient-icon-styled.js";
+import { PropTypes } from "prop-types";
+import { orderPropTypes } from "../../utils/prop-types";
 
 export function FeedOrderCard({ order, showStatus = false, handleClick }) {
   const { ingredients } = useSelector(state => state.burgerIngredientsReducer);
@@ -50,9 +52,15 @@ export function FeedOrderCard({ order, showStatus = false, handleClick }) {
     <li onClick={() => handleClick(order._id)} className={styles.wrapper}>
       <div className={styles.firstBox}>
         <p className="text text_type_digits-default">#{order.number}</p>
-        <p className="text text_type_main-default text_color_inactive">
-          <FormattedDate date={new Date(order.createdAt)} />
-        </p>
+        {order.status === "pending" || order.status === "created" ? (
+          <p className="text text_type_main-default text_color_inactive">
+            Только что
+          </p>
+        ) : (
+          <p className="text text_type_main-default text_color_inactive">
+            <FormattedDate date={new Date(order.createdAt)} />
+          </p>
+        )}
       </div>
       <p className="text text_type_main-medium">{order.name}</p>
       {showStatus && (
@@ -111,3 +119,9 @@ export function FeedOrderCard({ order, showStatus = false, handleClick }) {
     </li>
   );
 }
+
+FeedOrderCard.propTypes = {
+  order: orderPropTypes.isRequired,
+  showStatus: PropTypes.bool.isRequired,
+  handleClick: PropTypes.func.isRequired,
+};

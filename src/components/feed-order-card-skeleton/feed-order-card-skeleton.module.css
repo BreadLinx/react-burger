@@ -46,3 +46,10 @@
   border-radius: 10px;
   background-color: #222228;
 }
+
+.status {
+  width: 25%;
+  height: 24px;
+  border-radius: 10px;
+  background-color: #222228;
+}

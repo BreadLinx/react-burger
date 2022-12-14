@@ -19,46 +19,30 @@ import { Modal } from "../modal/modal.js";
 import { IngredientDetails } from "../ingredient-details/ingredient-details.js";
 import { errorSlice } from "../../services/reducers/error-slice.js";
 import { OrderFeedModal } from "../order-feed-modal/order-feed-modal.js";
-import { OrderPage } from "../../pages/order-page.js";
-
-import { useSocket } from "../../hooks/useSocket.js";
-import { FEED_URL } from "../../utils/burger-api.js";
-import { feedSlice } from "../../services/reducers/feed-slice";
+import { FeedOrderPage } from "../../pages/feed-order-page.js";
+import { OrdersOrderPage } from "../../pages/orders-order-page.js";
 
 export function App() {
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
 
-  const [connectFeed, sendMessage] = useSocket(FEED_URL, { onMessage });
-  const { setFeedData } = feedSlice.actions;
-  const { total } = useSelector(state => state.feedReducer);
-
-  function onMessage(event) {
-    const data = JSON.parse(event.data);
-    if (!data.success) {
-      return;
-    }
-    if (total !== data.total) {
-      dispatch(setFeedData(data));
-    }
-  }
-
   const { ingredientsError } = useSelector(
     state => state.burgerIngredientsReducer,
   );
 
-  const { makeUserAuthorizedTrue } = loginAuthSlice.actions;
+  const { makeUserAuthorizedTrue, makeUserAuthorizedFalse } =
+    loginAuthSlice.actions;
   const { showError, hideError } = errorSlice.actions;
 
   useEffect(() => {
-    document.title = "Build your burger of cosmo ingredients";
     dispatch(getIngridients());
-    connectFeed();
     const authToken = getCookie("authToken");
     if (authToken) {
       dispatch(makeUserAuthorizedTrue());
       dispatch(getUserData());
+    } else {
+      dispatch(makeUserAuthorizedFalse());
     }
   }, []);
 
@@ -89,9 +73,6 @@ export function App() {
     history.replace({ pathname: "/profile/orders" });
   }
 
-  const feedOrders = useSelector(state => state.feedReducer.orders);
-  const personalOrders = useSelector(state => state.userOrdersReducer.orders);
-
   return (
     <>
       <Switch location={background || location}>
@@ -111,7 +92,7 @@ export function App() {
           <ResetPasswordPage />
         </Route>
         <ProtectedRoute path="/profile/orders/:id" exact>
-          <OrderPage orders={personalOrders} />
+          <OrdersOrderPage />
         </ProtectedRoute>
         <ProtectedRoute path="/profile">
           <ProfilePage />
@@ -123,7 +104,7 @@ export function App() {
           <FeedPage />
         </Route>
         <Route path="/feed/:id" exact>
-          <OrderPage orders={feedOrders} />
+          <FeedOrderPage />
         </Route>
         <Route>
           <NotFound404 />
@@ -139,14 +120,14 @@ export function App() {
       {background && (
         <Route path="/feed/:id">
           <Modal closePopup={closeOrderFeedPopup}>
-            <OrderFeedModal orders={feedOrders} />
+            <OrderFeedModal />
           </Modal>
         </Route>
       )}
       {background && (
         <Route path="/profile/orders/:id">
           <Modal closePopup={closePersonalOrderPopup}>
-            <OrderFeedModal orders={personalOrders} />
+            <OrderFeedModal />
           </Modal>
         </Route>
       )}

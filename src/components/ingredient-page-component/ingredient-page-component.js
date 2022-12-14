@@ -1,5 +1,6 @@
 import styles from "./ingredient-page-component.module.css";
 import { Loader } from "../loader/loader";
+import { ingridientPropTypes } from "../../utils/prop-types.js";
 
 export function IngredientPageComponent({ ingredient }) {
   return (
@@ -66,3 +67,7 @@ export function IngredientPageComponent({ ingredient }) {
     </section>
   );
 }
+
+IngredientPageComponent.propTypes = {
+  ingredient: ingridientPropTypes.isRequired,
+};

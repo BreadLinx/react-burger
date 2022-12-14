@@ -7,6 +7,8 @@ import {
   FormattedDate,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { PropTypes } from "prop-types";
+import { orderPropTypes } from "../../utils/prop-types";
 
 export function OrderPageComponent({ order }) {
   const { ingredients } = useSelector(state => state.burgerIngredientsReducer);
@@ -105,9 +107,15 @@ export function OrderPageComponent({ order }) {
             </ul>
           </div>
           <div className={styles.totalBox}>
-            <p className="text text_type_main-default text_color_inactive">
-              <FormattedDate date={new Date(order.createdAt)} />
-            </p>
+            {order.status === "pending" || order.status === "created" ? (
+              <p className="text text_type_main-default text_color_inactive">
+                Только что
+              </p>
+            ) : (
+              <p className="text text_type_main-default text_color_inactive">
+                <FormattedDate date={new Date(order.createdAt)} />
+              </p>
+            )}
             <p
               className={`text text_type_digits-default ${styles.totalTextBox}`}
             >
@@ -120,3 +128,7 @@ export function OrderPageComponent({ order }) {
     </section>
   );
 }
+
+OrderPageComponent.propTypes = {
+  order: orderPropTypes.isRequired,
+};

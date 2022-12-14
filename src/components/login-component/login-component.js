@@ -107,7 +107,6 @@ export function LoginComponent() {
               name={"password"}
               error={!!errors.password}
               errorText={errors.password}
-              minLength={8}
               disabled={request}
               required
               size={"default"}

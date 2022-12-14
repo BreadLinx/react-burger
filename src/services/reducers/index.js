@@ -7,6 +7,7 @@ import errorReducer from "./error-slice.js";
 import successReducer from "./success-slice.js";
 import feedReducer from "./feed-slice.js";
 import userOrdersReducer from "./user-orders-slice.js";
+import webSocketReducer from "./webSocket-slice.js";
 
 export const rootReducer = {
   burgerIngredientsReducer,
@@ -18,4 +19,5 @@ export const rootReducer = {
   successReducer,
   feedReducer,
   userOrdersReducer,
+  webSocketReducer,
 };

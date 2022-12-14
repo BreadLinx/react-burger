@@ -1,15 +1,20 @@
 import styles from "./order-feed.module.css";
 import { FeedOrderCard } from "../feed-order-card/feed-order-card.js";
-import { useSelector } from "react-redux";
-import { useMemo, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useMemo, useCallback, useEffect } from "react";
 import { FeedOrderCardSkeleton } from "../feed-order-card-skeleton/feed-order-card-skeleton.js";
 import { useLocation, useHistory } from "react-router-dom";
 
 export function OrderFeed() {
+  const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
 
-  const { orders, total, totalToday } = useSelector(state => state.feedReducer);
+  const { messages } = useSelector(state => state.webSocketReducer);
+  const { orders, total, totalToday } =
+    messages.length !== 0
+      ? messages[messages.length - 1]
+      : { orders: [], total: 0, totalToday: 0 };
 
   const readyOrdersArray = useMemo(() => {
     if (!orders) {
@@ -36,6 +41,13 @@ export function OrderFeed() {
     },
     [history, location],
   );
+
+  useEffect(() => {
+    dispatch({ type: "wsFeedConnectionStart" });
+    return () => {
+      dispatch({ type: "wsCloseConnection" });
+    };
+  }, []);
 
   return (
     <>
