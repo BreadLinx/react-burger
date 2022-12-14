@@ -1,0 +1,25 @@
+.section {
+  width: 860px;
+  height: calc(100vh - 88px);
+}
+
+.feedWrapper {
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  padding-left: 0;
+  padding-right: 8px;
+  margin-top: 40px;
+  margin-bottom: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 24px;
+  max-height: calc(100vh - 128px);
+  padding-bottom: 8px;
+}
+
+.notFoundText {
+  align-self: center;
+}

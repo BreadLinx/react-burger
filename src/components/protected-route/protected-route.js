@@ -2,6 +2,7 @@ import { Route, Redirect } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { errorSlice } from "../../services/reducers/error-slice.js";
+import { PropTypes } from "prop-types";
 
 export function ProtectedRoute({ children, ...rest }) {
   const dispatch = useDispatch();
@@ -13,6 +14,9 @@ export function ProtectedRoute({ children, ...rest }) {
   const { showError, hideError } = errorSlice.actions;
 
   useEffect(() => {
+    if (isUserAuthorized === undefined) {
+      return;
+    }
     if (!isUserAuthorized) {
       dispatch(
         showError(
@@ -24,6 +28,10 @@ export function ProtectedRoute({ children, ...rest }) {
       }, 5500);
     }
   }, []);
+
+  if (isUserAuthorized === undefined) {
+    return null;
+  }
 
   return (
     <Route
@@ -38,3 +46,8 @@ export function ProtectedRoute({ children, ...rest }) {
     />
   );
 }
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.element.isRequired,
+  rest: PropTypes.any,
+};

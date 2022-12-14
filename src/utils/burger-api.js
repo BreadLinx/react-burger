@@ -15,6 +15,10 @@ const REFRESH_URL = `${BASE_API_URL}/auth/token`;
 const LOGOUT_URL = `${BASE_API_URL}/auth/logout`;
 const USER_DATA_URL = `${BASE_API_URL}/auth/user`;
 
+const BASE_WEBSOCKET_URL = "wss://norma.nomoreparties.space";
+export const FEED_URL = `${BASE_WEBSOCKET_URL}/orders/all`;
+export const PERSONAL_FEED_URL = `${BASE_WEBSOCKET_URL}/orders`;
+
 async function checkResponse(res) {
   const response = await res.json();
   return response.success ? response : Promise.reject(response);
@@ -60,16 +64,6 @@ export function getIngredients() {
   return request(INGREDIENTS_URL, {
     headers: headers,
     method: "GET",
-  });
-}
-
-export function sendOrderRequest(idArray) {
-  return request(ORDERS_URL, {
-    headers,
-    method: "POST",
-    body: JSON.stringify({
-      ingredients: idArray,
-    }),
   });
 }
 
@@ -148,6 +142,19 @@ export function updateUserDataRequest({ name, email, password }) {
       name: name,
       email: email,
       password: password,
+    }),
+  });
+}
+
+export function sendOrderRequest(idArray) {
+  return fetchWithRefresh(ORDERS_URL, {
+    headers: {
+      ...headers,
+      authorization: `Bearer ${getCookie("authToken")}`,
+    },
+    method: "POST",
+    body: JSON.stringify({
+      ingredients: idArray,
     }),
   });
 }

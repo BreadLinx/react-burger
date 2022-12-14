@@ -21,8 +21,13 @@ export function AppHeader() {
         <BurgerIcon type={url.endsWith("/") ? "primary" : "secondary"} />
         <p className="text text_type_main-default">Конструктор</p>
       </Link>
-      <Link to="/" className={`p-5 ${styles.button}`}>
-        <ListIcon type="secondary" />
+      <Link
+        to="/feed"
+        className={`p-5 ${styles.button} ${
+          url.endsWith("/feed") ? styles.button_active : ""
+        }`}
+      >
+        <ListIcon type={url.endsWith("/feed") ? "primary" : "secondary"} />
         <p className="text text_type_main-default">Лента заказов</p>
       </Link>
       <Link to="/" className={styles.logoWrapper}>

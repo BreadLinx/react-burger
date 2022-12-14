@@ -1,0 +1,1 @@
+export const SUCCESSFUL_CLOSURE_CODE = 1000;

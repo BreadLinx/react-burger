@@ -15,6 +15,7 @@ import { burgerConstructorSlice } from "../../services/reducers/burger-construct
 import { orderDetailsSlice } from "../../services/reducers/order-details-slice.js";
 import { ConstructorCard } from "../constructor-card/constructor-card.js";
 import { errorSlice } from "../../services/reducers/error-slice.js";
+import { successSlice } from "../../services/reducers/success-slice";
 
 export function BurgerConstructor() {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ export function BurgerConstructor() {
     burgerConstructorSlice.actions;
   const { clearOrderData } = orderDetailsSlice.actions;
   const { showError, hideError } = errorSlice.actions;
+  const { showSuccess, hideSuccess } = successSlice.actions;
 
   const [{ hover, canDrop }, dropTarget] = useDrop({
     accept: "ingredient",
@@ -70,6 +72,14 @@ export function BurgerConstructor() {
         burgerStructure.bun._id,
       ];
       dispatch(sendOrder(idArray));
+      dispatch(
+        showSuccess(
+          "Ваш заказ успешно создан и сейчас готовится. Не закрывайте всплывающее окно, там отобразиться номер заказа и после вы сможете его забрать.",
+        ),
+      );
+      setTimeout(() => {
+        dispatch(hideSuccess());
+      }, 14000);
     } else {
       dispatch(
         showError(

@@ -130,8 +130,8 @@ export function RegisterComponent() {
               name={"password"}
               error={!!errors.password}
               disabled={request}
-              errorText={"Минимум 8 симолов. Мининмум 1 цифра в пароле."}
-              pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+              errorText={errors.password}
+              minLength={8}
               size={"default"}
             />
           </div>

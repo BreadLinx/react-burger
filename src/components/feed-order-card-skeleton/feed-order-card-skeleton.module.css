@@ -1,0 +1,55 @@
+@keyframes flashingSkeleton {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.box {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 24px;
+  gap: 24px;
+  background: #1c1c21;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 0px 2px rgba(0, 0, 0, 0.06),
+    0px 0px 1px rgba(0, 0, 0, 0.04);
+  border-radius: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  animation-duration: 0.7s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+}
+
+.number {
+  width: 40%;
+  height: 24.08px;
+  border-radius: 10px;
+  background-color: #222228;
+}
+
+.name {
+  width: 70%;
+  height: 30px;
+  border-radius: 10px;
+  background-color: #222228;
+}
+
+.counter {
+  width: 100%;
+  height: 64px;
+  border-radius: 10px;
+  background-color: #222228;
+}
+
+.status {
+  width: 25%;
+  height: 24px;
+  border-radius: 10px;
+  background-color: #222228;
+}

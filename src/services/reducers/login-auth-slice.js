@@ -8,7 +8,7 @@ import { setCookie, deleteCookie } from "../../utils/cookies.js";
 
 const initialState = {
   user: {
-    isUserAuthorized: false,
+    isUserAuthorized: undefined,
     email: "",
     name: "",
   },
@@ -146,6 +146,7 @@ export const loginAuthSlice = createSlice({
       .addCase(getUserData.rejected, state => {
         state.requestStatus.getUserData.request = false;
         state.requestStatus.getUserData.error = true;
+        state.user.isUserAuthorized = false;
       })
       .addCase(updateUserData.pending, state => {
         state.requestStatus.updateUserData.request = true;

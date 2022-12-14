@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 export const ingridientPropTypes = PropTypes.shape({
   calories: PropTypes.number,
@@ -30,4 +30,14 @@ export const constructorsIngridientPropTypes = PropTypes.shape({
   _id: PropTypes.string,
   dragId: PropTypes.number,
   isDragging: PropTypes.bool,
+});
+
+export const orderPropTypes = PropTypes.shape({
+  _id: PropTypes.string,
+  ingredients: PropTypes.arrayOf(PropTypes.string),
+  status: PropTypes.string,
+  name: PropTypes.string,
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
+  number: PropTypes.number,
 });
