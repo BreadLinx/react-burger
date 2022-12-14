@@ -1,6 +1,7 @@
 import { webSocketSlice } from "../reducers/webSocket-slice.js";
 import { FEED_URL, PERSONAL_FEED_URL } from "../../utils/burger-api.js";
 import { getCookie } from "../../utils/cookies.js";
+import { SUCCESSFUL_CLOSURE_CODE } from "../../utils/webSocket-codes.js";
 
 export const socketMiddleware = store => {
   let socket = null;
@@ -17,7 +18,6 @@ export const socketMiddleware = store => {
 
     if (type === "wsFeedConnectionStart") {
       socket = new WebSocket(FEED_URL);
-      console.log(socket);
     }
     if (type === "wsPersonalOrdersConnectionStart") {
       socket = new WebSocket(
@@ -49,7 +49,7 @@ export const socketMiddleware = store => {
       }
 
       if (type === "wsCloseConnection") {
-        socket.close(1000, "CLOSE_GOING_AWAY");
+        socket.close(SUCCESSFUL_CLOSURE_CODE, "CLOSE_GOING_AWAY");
       }
     }
 
