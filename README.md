@@ -1,5 +1,6 @@
-# КОСМИЧЕСКАЯ БУРГЕРНАЯ НА REACT
-Проект Stellar Burger на React. Написан на функциональных компонентах.
-Можно собирать и заказывать бургеры из космических состовляющих.
+# Cosmic Burger Cafe
+Project has been done on React.
+Routing adn authorization was made using react router 5.3.3.
+Redux toolkit is used as a state manager.
 
-Приятного аппетита!
+Bon appetit!
