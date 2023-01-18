@@ -7,7 +7,7 @@ import {
   FormattedDate,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { IFeedOrder } from "types/types";
+import { IFeedOrder, IFeedOrderCardIngredient, ICard } from "types/types";
 
 interface IOrderPageComponent {
   order: IFeedOrder;
@@ -22,7 +22,9 @@ export const OrderPageComponent: FC<IOrderPageComponent> = ({ order }) => {
     if (!order?.ingredients || !ingredients) {
       return;
     }
-    const ingredientsArray: any[] = [];
+
+    const ingredientsArray: Array<IFeedOrderCardIngredient> = [];
+
     order.ingredients.forEach(item => {
       if (
         ingredientsArray.some(ingredient => ingredient.structure._id === item)
@@ -39,11 +41,12 @@ export const OrderPageComponent: FC<IOrderPageComponent> = ({ order }) => {
           ingredient => ingredient._id === item,
         );
         ingredientsArray.push({
-          structure: { ...ingredient },
+          structure: { ...(ingredient as ICard) },
           repeat: 1,
         });
       }
     });
+
     return ingredientsArray;
   }, [ingredients, order?.ingredients]);
 

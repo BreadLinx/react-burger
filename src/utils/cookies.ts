@@ -1,4 +1,10 @@
-export function setCookie(name: string, value: string, props?: any) {
+interface CookieProps {
+  path?: string;
+  expires?: number | string | Date;
+  [key: string]: any;
+}
+
+export function setCookie(name: string, value: string, props?: CookieProps) {
   props = {
     path: "/",
     ...props,
@@ -9,7 +15,7 @@ export function setCookie(name: string, value: string, props?: any) {
     d.setTime(d.getTime() + exp * 1000);
     exp = props.expires = d;
   }
-  if (exp && exp.toUTCString) {
+  if (exp instanceof Date) {
     props.expires = exp.toUTCString();
   }
   value = encodeURIComponent(value);

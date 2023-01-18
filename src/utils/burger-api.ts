@@ -1,3 +1,4 @@
+import { SuccessResponse } from "types/types";
 import { getCookie, setCookie } from "utils/cookies";
 
 const headers = {
@@ -19,7 +20,7 @@ const BASE_WEBSOCKET_URL = "wss://norma.nomoreparties.space";
 export const FEED_URL = `${BASE_WEBSOCKET_URL}/orders/all`;
 export const PERSONAL_FEED_URL = `${BASE_WEBSOCKET_URL}/orders`;
 
-async function checkResponse(res: any) {
+async function checkResponse(res: Response): Promise<SuccessResponse | never> {
   const response = await res.json();
   return response.success ? response : Promise.reject(response);
 }

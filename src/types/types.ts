@@ -56,3 +56,13 @@ export interface IOrder {
   updatedAt: string;
   _id: string;
 }
+
+export interface IFeedOrderCardIngredient {
+  repeat: number;
+  structure: ICard;
+}
+
+export interface SuccessResponse {
+  success: boolean;
+  [key: string]: any;
+}

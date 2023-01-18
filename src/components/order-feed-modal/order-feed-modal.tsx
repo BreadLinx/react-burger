@@ -8,7 +8,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { IngredientIconStyled } from "components/ingredient-icon-styled/ingredient-icon-styled";
 import { Loader } from "components/loader/loader";
-import { IFeedOrder } from "types/types";
+import { ICard, IFeedOrder, IFeedOrderCardIngredient } from "types/types";
 
 export const OrderFeedModal: FC = () => {
   const { id } = useParams() as { id: string };
@@ -30,7 +30,9 @@ export const OrderFeedModal: FC = () => {
     if (!order?.ingredients || !ingredients) {
       return;
     }
-    const ingredientsArray: any[] = [];
+
+    const ingredientsArray: Array<IFeedOrderCardIngredient> = [];
+
     order.ingredients.forEach((item: any) => {
       if (
         ingredientsArray.some(ingredient => ingredient.structure._id === item)
@@ -47,11 +49,12 @@ export const OrderFeedModal: FC = () => {
           ingredient => ingredient._id === item,
         );
         ingredientsArray.push({
-          structure: { ...ingredient },
+          structure: { ...(ingredient as ICard) },
           repeat: 1,
         });
       }
     });
+
     return ingredientsArray;
   }, [ingredients, order?.ingredients]);
 
