@@ -12,6 +12,6 @@ interface IResposne {
 export const getUserData = createAsyncThunk<IResposne>(
   "loginAuthSlice/getUserData",
   async () => {
-    return await getUserDataRequest();
+    return (await getUserDataRequest()) as IResposne;
   },
 );

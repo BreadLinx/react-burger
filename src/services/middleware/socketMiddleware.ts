@@ -1,10 +1,15 @@
-import { AnyAction, Dispatch } from "redux";
+import { Middleware, Dispatch, AnyAction } from "redux";
 import { webSocketSlice } from "services/reducers/webSocket-slice";
 import { FEED_URL, PERSONAL_FEED_URL } from "utils/burger-api";
 import { getCookie } from "utils/cookies";
 import { SUCCESSFUL_CLOSURE_CODE } from "utils/webSocket-codes";
+import { AppDispatch } from "index";
 
-export const socketMiddleware = (store: { dispatch: any; getState: any }) => {
+export const socketMiddleware: Middleware = ({
+  dispatch,
+}: {
+  dispatch: AppDispatch;
+}) => {
   let socket: WebSocket | null = null;
   const {
     wsConnectionSuccess,
@@ -13,8 +18,7 @@ export const socketMiddleware = (store: { dispatch: any; getState: any }) => {
     wsGetMessage,
   } = webSocketSlice.actions;
 
-  return (next: Dispatch<AnyAction>) => (action: AnyAction) => {
-    const { dispatch } = store;
+  return (next: Dispatch) => (action: AnyAction) => {
     const { type, payload } = action;
 
     if (type === "wsFeedConnectionStart") {

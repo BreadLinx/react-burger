@@ -19,6 +19,6 @@ interface IResponse {
 export const sendRegistration = createAsyncThunk<IResponse, IOptions>(
   "loginAuthSlice/sendRegistration",
   async options => {
-    return await sendRegistrationRequest(options);
+    return (await sendRegistrationRequest(options)) as IResponse;
   },
 );

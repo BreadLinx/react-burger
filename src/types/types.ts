@@ -62,7 +62,7 @@ export interface IFeedOrderCardIngredient {
   structure: ICard;
 }
 
-export interface SuccessResponse {
+export interface IServerResponse {
   success: boolean;
   [key: string]: any;
 }

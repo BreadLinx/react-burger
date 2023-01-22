@@ -18,6 +18,6 @@ interface IResponse {
 export const updateUserData = createAsyncThunk<IResponse, IOptions>(
   "loginAuthSlice/updateUserData",
   async options => {
-    return await updateUserDataRequest(options);
+    return (await updateUserDataRequest(options)) as IResponse;
   },
 );

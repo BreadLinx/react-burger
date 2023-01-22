@@ -14,6 +14,6 @@ interface IResponse {
 export const sendResetPassword = createAsyncThunk<IResponse, IOptions>(
   "forgotPasswordSlice/sendResetPassword",
   async options => {
-    return await sendResetPasswordRequest(options);
+    return (await sendResetPasswordRequest(options)) as IResponse;
   },
 );

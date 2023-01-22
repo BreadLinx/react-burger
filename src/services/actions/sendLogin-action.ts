@@ -19,6 +19,6 @@ interface IResponse {
 export const sendLogin = createAsyncThunk<IResponse, IOptions>(
   "loginAuthSlice/sendLogin",
   async options => {
-    return await sendLoginRequest(options);
+    return (await sendLoginRequest(options)) as IResponse;
   },
 );

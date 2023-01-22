@@ -107,32 +107,19 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.registration.error = false;
         state.requestStatus.registration.success = false;
       })
-      .addCase(
-        sendRegistration.fulfilled,
-        (
-          state,
-          action: PayloadAction<{
-            accessToken: string;
-            refreshToken: string;
-            user: {
-              email: string;
-              name: string;
-            };
-          }>,
-        ) => {
-          state.requestStatus.registration.request = false;
-          state.requestStatus.registration.success = true;
+      .addCase(sendRegistration.fulfilled, (state, action) => {
+        state.requestStatus.registration.request = false;
+        state.requestStatus.registration.success = true;
 
-          const authToken = action.payload.accessToken.split("Bearer ")[1];
-          const refreshToken = action.payload.refreshToken;
-          setCookie("authToken", authToken);
-          setCookie("refreshToken", refreshToken);
+        const authToken = action.payload.accessToken.split("Bearer ")[1];
+        const refreshToken = action.payload.refreshToken;
+        setCookie("authToken", authToken);
+        setCookie("refreshToken", refreshToken);
 
-          state.user.isUserAuthorized = true;
-          state.user.email = action.payload.user.email;
-          state.user.name = action.payload.user.name;
-        },
-      )
+        state.user.isUserAuthorized = true;
+        state.user.email = action.payload.user.email;
+        state.user.name = action.payload.user.name;
+      })
       .addCase(sendRegistration.rejected, (state, action) => {
         state.requestStatus.registration.request = false;
         state.requestStatus.registration.error = true;
@@ -143,32 +130,19 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.login.error = false;
         state.requestStatus.login.success = false;
       })
-      .addCase(
-        sendLogin.fulfilled,
-        (
-          state,
-          action: PayloadAction<{
-            accessToken: string;
-            refreshToken: string;
-            user: {
-              email: string;
-              name: string;
-            };
-          }>,
-        ) => {
-          state.requestStatus.login.request = false;
-          state.requestStatus.login.success = true;
+      .addCase(sendLogin.fulfilled, (state, action) => {
+        state.requestStatus.login.request = false;
+        state.requestStatus.login.success = true;
 
-          const authToken = action.payload.accessToken.split("Bearer ")[1];
-          const refreshToken = action.payload.refreshToken;
-          setCookie("authToken", authToken);
-          setCookie("refreshToken", refreshToken);
+        const authToken = action.payload.accessToken.split("Bearer ")[1];
+        const refreshToken = action.payload.refreshToken;
+        setCookie("authToken", authToken);
+        setCookie("refreshToken", refreshToken);
 
-          state.user.isUserAuthorized = true;
-          state.user.email = action.payload.user.email;
-          state.user.name = action.payload.user.name;
-        },
-      )
+        state.user.isUserAuthorized = true;
+        state.user.email = action.payload.user.email;
+        state.user.name = action.payload.user.name;
+      })
       .addCase(sendLogin.rejected, (state, action) => {
         state.requestStatus.login.request = false;
         state.requestStatus.login.error = true;
@@ -202,24 +176,13 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.getUserData.error = false;
         state.requestStatus.getUserData.success = false;
       })
-      .addCase(
-        getUserData.fulfilled,
-        (
-          state,
-          action: PayloadAction<{
-            user: {
-              email: string;
-              name: string;
-            };
-          }>,
-        ) => {
-          state.requestStatus.getUserData.request = false;
-          state.requestStatus.getUserData.success = true;
+      .addCase(getUserData.fulfilled, (state, action) => {
+        state.requestStatus.getUserData.request = false;
+        state.requestStatus.getUserData.success = true;
 
-          state.user.email = action.payload.user.email;
-          state.user.name = action.payload.user.name;
-        },
-      )
+        state.user.email = action.payload.user.email;
+        state.user.name = action.payload.user.name;
+      })
       .addCase(getUserData.rejected, state => {
         state.requestStatus.getUserData.request = false;
         state.requestStatus.getUserData.error = true;
@@ -230,24 +193,13 @@ export const loginAuthSlice = createSlice({
         state.requestStatus.updateUserData.error = false;
         state.requestStatus.updateUserData.success = false;
       })
-      .addCase(
-        updateUserData.fulfilled,
-        (
-          state,
-          action: PayloadAction<{
-            user: {
-              email: string;
-              name: string;
-            };
-          }>,
-        ) => {
-          state.requestStatus.updateUserData.request = false;
-          state.requestStatus.updateUserData.success = true;
+      .addCase(updateUserData.fulfilled, (state, action) => {
+        state.requestStatus.updateUserData.request = false;
+        state.requestStatus.updateUserData.success = true;
 
-          state.user.email = action.payload.user.email;
-          state.user.name = action.payload.user.name;
-        },
-      )
+        state.user.email = action.payload.user.email;
+        state.user.name = action.payload.user.name;
+      })
       .addCase(updateUserData.rejected, (state, action) => {
         state.requestStatus.updateUserData.request = false;
         state.requestStatus.updateUserData.error = true;

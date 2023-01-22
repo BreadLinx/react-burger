@@ -9,6 +9,6 @@ interface IResponse {
 export const sendLogout = createAsyncThunk<IResponse>(
   "loginAuthSlice/sendLogout",
   async () => {
-    return await sendLogoutRequest();
+    return (await sendLogoutRequest()) as IResponse;
   },
 );

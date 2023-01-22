@@ -11,6 +11,6 @@ interface IResponse {
 export const sendOrder = createAsyncThunk<IResponse, string[]>(
   "orderDetailsSlice/sendOrder",
   async idArray => {
-    return await sendOrderRequest(idArray);
+    return (await sendOrderRequest(idArray)) as IResponse;
   },
 );

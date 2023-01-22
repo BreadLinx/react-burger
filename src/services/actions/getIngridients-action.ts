@@ -2,10 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getIngredients } from "utils/burger-api";
 import { ICard } from "types/types";
 
-export const getIngridients = createAsyncThunk<ICard[]>(
+interface IResposne {
+  success: boolean;
+  data: ICard[];
+}
+
+export const getIngridients = createAsyncThunk<IResposne>(
   "burgerIngredientsSlice/getIngridients",
   async () => {
-    const { data } = await getIngredients();
-    return data;
+    return (await getIngredients()) as IResposne;
   },
 );
